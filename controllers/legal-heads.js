@@ -69,9 +69,7 @@
         selectedSubjectMatter = "" + selectedSM;
         if (confirm("Change the Legal Head for " + selectedSM + " from " + $scope.legal_head + " to " + newLh)) {
           return MergeService.changeLegalHead(selectedSubjectMatter, $scope.legal_head, newLh, $routeParams.court).then(function(r) {
-            var c;
-            if (r.data.length === 1) {
-              c = r.data[0];
+            if (r.data.length === 3) {
               $alert({
                 title: 'Info:',
                 content: "Update Complete",

@@ -104,6 +104,35 @@ class AppController extends RESTController {
 
 	}
 
+	/**
+	 * Rename Subject Matter
+	 * @return array
+	 */
+	public function changeLegalHead() {
+		$post = $this->requestBody;
+		$tableName = "analysis";
+
+		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
+
+		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
+			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `legal head` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :old  AND subjectmatter = :sm;", array("old"=>$post->old, "new"=>$post->new,
+				"sm"=>$post->sm))->execute();
+
+			$r2 = $this->getDi()->getShared('db')->query("update subject_matters set
+			legalhead = :new where subjectmatter = :sm and legalhead= :old;", array("old"=>$post->old,
+				"new"=>$post->new, "sm"=>$post->sm))->execute();
+			$r3 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			legalhead = :new WHERE legalhead = :old AND subjectmatter = :sm", array("old"=>$post->old,
+				"new"=>$post->new, "sm"=>$post->sm))->execute();
+
+			return array($r1, $r2, $r3);
+		} else {
+			echo "No Data";
+			return array();
+		}
+
+	}
+
 	public function mergeSubjectMatters() {
 
 	}
