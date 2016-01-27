@@ -6,10 +6,10 @@ angular.module 'metaEditor'
 
   $scope.getLegalHeads = ->
     AppServe.query { getHeads: true, court: $routeParams.court }, (response) ->
-      $scope.legalHeads = response.records
+      $scope.legalHeads = response
 
     AppServe.query { getStandard: true }, (response) ->
-      $scope.sLegalHeads = response.records
+      $scope.sLegalHeads = response
 
   $scope.activateRow = (lH, index) ->
     if $scope.activeRow is index
@@ -146,11 +146,11 @@ angular.module 'metaEditor'
 
   $scope.getSubjectMatters = (page) ->
     AppServe.query { getSubjectMatters: true, court: $routeParams.court, legal_head: $scope.legal_head, page: page, per_page: $scope.perPage }, (sm) ->
-      $scope.subjectMatters  = sm.records
+      $scope.subjectMatters  = sm
 
   $scope.fetchStandard = ->
     AppServe.query { getSSubjectMatters: true, lh: $scope.legal_head }, (response) ->
-      $scope.standardSubjectMatters = response.records
+      $scope.standardSubjectMatters = response
 
   $scope.showIssues = (sm) ->
     curPath = $location.path()

@@ -9,9 +9,7 @@ angular.module 'metaEditor'
   uk: 'United Kingdom'
 
 .factory 'AppServe', ['$resource', ($resource)->
-  $resource '/api/v1/legalHeads/:_id', null,
-    query:
-      isArray: false
+  $resource '/api/v1/legalHeads/:_id?envelope=false'
 ]
 
 .factory 'MergeService', ['$http', ($http)->

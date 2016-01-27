@@ -9,11 +9,7 @@
     uk: 'United Kingdom'
   }).factory('AppServe', [
     '$resource', function($resource) {
-      return $resource('/api/v1/legalHeads/:_id', null, {
-        query: {
-          isArray: false
-        }
-      });
+      return $resource('/api/v1/legalHeads/:_id?envelope=false');
     }
   ]).factory('MergeService', [
     '$http', function($http) {

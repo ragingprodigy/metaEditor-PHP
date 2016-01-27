@@ -9,12 +9,12 @@
           getHeads: true,
           court: $routeParams.court
         }, function(response) {
-          return $scope.legalHeads = response.records;
+          return $scope.legalHeads = response;
         });
         return AppServe.query({
           getStandard: true
         }, function(response) {
-          return $scope.sLegalHeads = response.records;
+          return $scope.sLegalHeads = response;
         });
       };
       $scope.activateRow = function(lH, index) {
@@ -178,7 +178,7 @@
           page: page,
           per_page: $scope.perPage
         }, function(sm) {
-          return $scope.subjectMatters = sm.records;
+          return $scope.subjectMatters = sm;
         });
       };
       $scope.fetchStandard = function() {
@@ -186,7 +186,7 @@
           getSSubjectMatters: true,
           lh: $scope.legal_head
         }, function(response) {
-          return $scope.standardSubjectMatters = response.records;
+          return $scope.standardSubjectMatters = response;
         });
       };
       $scope.showIssues = function(sm) {

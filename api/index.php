@@ -27,7 +27,9 @@ $di->set('collections', function(){
 });
 
 $di->setShared('config', function() {
-	return new IniConfig("config/config.ini");
+	$fileName = $_SERVER['SERVER_ADDR'] == '127.0.0.1' ? "config" : "production";
+
+	return new IniConfig("config/$fileName.ini");
 });
 
 $di->setShared('session', function(){

@@ -62,6 +62,11 @@ class AppController extends RESTController {
 	public function setAsStandard() {
 
 	}
+
+	public function test() {
+		return $_SERVER;
+	}
+
 	/**
 	 * Get all Parts in a book for a specified year
 	 * @return array
