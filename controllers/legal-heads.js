@@ -248,10 +248,9 @@
       };
       $scope.updateContent = function(newIssue) {
         if ($scope.currentIss !== void 0 && confirm("Change " + $scope.currentIss + " to " + newIssue + "?")) {
-          MergeService.updateIssue($scope.currentIss, newIssue, $routeParams.court, $scope.legal_head, $scope.subject_matter).then(function(response) {
-            var c;
-            if (response.data.length === 1) {
-              c = response.data[0];
+          return MergeService.updateIssue($scope.currentIss, newIssue, $routeParams.court, $scope.legal_head, $scope.subject_matter).then(function(response) {
+            if (response.data.length === 2) {
+              $scope.issues[$scope.selectedIndex].issue = newIssue;
               $alert({
                 title: 'Info:',
                 content: "Update Complete",
@@ -259,11 +258,12 @@
                 type: 'info',
                 duration: 3
               });
-              return $scope.getIssues();
+              $scope.getIssues();
+              $scope.fetchStandard();
             }
+            return $scope.currentIss = $scope.selectedIndex = void 0;
           });
         }
-        return $scope.currentIss = $scope.selectedIndex = void 0;
       };
       $scope.toggleCurrent = function(iss, index) {
         if ($scope.currentIss === void 0 || $scope.currentIss !== iss) {
@@ -297,12 +297,10 @@
         theParent = $scope.issues[$scope.selectedParent].issue;
         if ($scope.mergeSet.length > 0 && confirm("Do you want to merge\n\n " + ($scope.mergeSet.join(', \n')) + " \n\n into " + theParent)) {
           return MergeService.mergeIssues(theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head, $scope.subject_matter).then(function(r) {
-            var c;
             if (r.data.length === 1) {
-              c = r.data[0];
               $alert({
                 title: 'Info:',
-                content: c.affectedRows + " records matched. " + c.changedRows + " records updated!",
+                content: "Records updated!",
                 placement: 'top-right',
                 type: 'info',
                 duration: 3
@@ -313,23 +311,18 @@
           });
         }
       };
-      $scope.getIssues = function(page) {
+      $scope.getIssues = function() {
         return AppServe.query({
           getIssues: true,
           court: $routeParams.court,
           legal_head: $scope.legal_head,
-          subject: $scope.subject_matter,
-          page: page,
-          per_page: $scope.perPage
+          subject: $scope.subject_matter
         }, function(issues, headers) {
-          $scope.totalResults = headers(CONF.countHeader);
-          $scope.currentPage = headers(CONF.pageHeader);
-          $scope.pages = Math.ceil($scope.totalResults / $scope.perPage);
           return $scope.issues = issues;
         });
       };
       $scope.unsetParent();
-      $scope.getIssues(1);
+      $scope.getIssues();
       $scope.fetchStandard = function() {
         $scope.standardIssues = AppServe.query({
           getSIssues: true,

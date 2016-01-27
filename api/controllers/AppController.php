@@ -97,7 +97,32 @@ class AppController extends RESTController {
 
 			return array($r1, $r2, $r3);
 		} else {
-			echo "No Data";
+			return array();
+		}
+
+	}
+
+	/**
+	 * Rename Issue
+	 * @return array
+	 */
+	public function updateIssue() {
+		$post = $this->requestBody;
+		$tableName = "analysis";
+
+		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
+
+		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
+			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `issues1` = :new, suitno41 = NULL,
+			dt_modified=NOW() where `issues1` = :old AND `legal head` = :lh AND subjectmatter = :sm;", array("old"=>$post->old,
+				"new"=>$post->new, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
+
+			$r2 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			issue = :new WHERE legalhead = :lh AND issue = :old AND subjectmatter = :sm", array("old"=>$post->old,
+				"new"=>$post->new, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
+
+			return array($r1, $r2);
+		} else {
 			return array();
 		}
 
@@ -126,7 +151,6 @@ class AppController extends RESTController {
 
 			return array($r1, $r2, $r3);
 		} else {
-			echo "No Data";
 			return array();
 		}
 

@@ -212,8 +212,8 @@ angular.module 'metaEditor'
     if $scope.currentIss isnt undefined and confirm "Change #{$scope.currentIss} to #{newIssue}?"
       MergeService.updateIssue $scope.currentIss, newIssue, $routeParams.court, $scope.legal_head, $scope.subject_matter
       .then (response) ->
-        if response.data.length is 1
-          c = response.data[0]
+        if response.data.length is 2
+          $scope.issues[$scope.selectedIndex].issue = newIssue
           $alert
             title: 'Info:'
             content: "Update Complete"
@@ -222,8 +222,8 @@ angular.module 'metaEditor'
             duration: 3
 
           $scope.getIssues()
-
-    $scope.currentIss = $scope.selectedIndex = undefined
+          $scope.fetchStandard()
+        $scope.currentIss = $scope.selectedIndex = undefined
 
   $scope.toggleCurrent = (iss, index) ->
     if $scope.currentIss is undefined or $scope.currentIss isnt iss
@@ -256,29 +256,22 @@ angular.module 'metaEditor'
       MergeService.mergeIssues theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head, $scope.subject_matter
       .then (r)->
         if r.data.length is 1
-          c = r.data[0]
-          $alert {
+          $alert
             title: 'Info:'
-            content: "#{c.affectedRows} records matched. #{c.changedRows} records updated!"
+            content: "Records updated!"
             placement: 'top-right'
             type: 'info'
             duration: 3
-          }
+
           $scope.unsetParent()
           $scope.getIssues()
 
-  $scope.getIssues = (page) ->
-    AppServe.query { getIssues: true, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter, page: page, per_page: $scope.perPage }, (issues, headers) ->
-      $scope.totalResults = headers CONF.countHeader
-      $scope.currentPage = headers CONF.pageHeader
-      $scope.pages = Math.ceil($scope.totalResults / $scope.perPage)
-
+  $scope.getIssues = ->
+    AppServe.query { getIssues: true, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }, (issues, headers) ->
       $scope.issues = issues
-#      _.each $scope.issues, (issue, index) ->
-#        $scope.issues[index].principles = AppServe.query { getPrinciples: true, issue: issue.issue, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }
 
   $scope.unsetParent()
-  $scope.getIssues 1
+  $scope.getIssues()
 
   $scope.fetchStandard = ->
     $scope.standardIssues = AppServe.query { getSIssues: true, lh: $scope.legal_head, sm: $scope.subject_matter }
@@ -291,7 +284,6 @@ angular.module 'metaEditor'
     $scope.getIssues $scope.currentPage
 
   $scope.showRatios = (issue, index) ->
-
     showAside = ->
       myAside = $aside
         title: "Principles Under Selected Issue"

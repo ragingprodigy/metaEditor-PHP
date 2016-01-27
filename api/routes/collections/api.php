@@ -20,6 +20,8 @@ return call_user_func(function(){
 	$api->post('/updateSubjectMatter', 'updateSubjectMatter');
 	$api->post('/changeLegalHead', 'changeLegalHead');
 
+	$api->post('/updateIssue', 'updateIssue');
+
 	$api->post('/mergeSubjectMatters', 'mergeSubjectMatters');
 
 	$api->get('/reports', 'reports');
