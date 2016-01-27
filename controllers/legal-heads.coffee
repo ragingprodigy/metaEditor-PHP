@@ -112,16 +112,16 @@ angular.module 'metaEditor'
 
       MergeService.mergeSubjectMatters theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head
       .then (r)->
-        if r.data.length is 1
-          c = r.data[0]
-          $alert {
+        if r.data.length is 3
+          $alert
             title: 'Info:'
             content: "Records updated!"
             placement: 'top-right'
             type: 'info'
             duration: 3
-          }
+
           $scope.unsetParent()
+          $scope.fetchStandard()
           $scope.getSubjectMatters()
 
   $scope.setStandard = (selectedMatter, index) ->

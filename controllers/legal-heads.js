@@ -131,9 +131,7 @@
         theParent = $scope.subjectMatters[$scope.selectedParent].subjectMatter;
         if ($scope.mergeSet.length > 0 && confirm($routeParams.court + " Do you want to merge\n\n " + ($scope.mergeSet.join(', \n')) + " \n\n into " + theParent)) {
           return MergeService.mergeSubjectMatters(theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head).then(function(r) {
-            var c;
-            if (r.data.length === 1) {
-              c = r.data[0];
+            if (r.data.length === 3) {
               $alert({
                 title: 'Info:',
                 content: "Records updated!",
@@ -142,6 +140,7 @@
                 duration: 3
               });
               $scope.unsetParent();
+              $scope.fetchStandard();
               return $scope.getSubjectMatters();
             }
           });
