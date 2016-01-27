@@ -1,0 +1,91 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Subject Matters in <span class="badge badge-info">{{title}}</span> <button class="btn-xs btn btn-success" ng-show="mergeSet.length" ng-click="doMerge()">Merge Subject Matters</button>
+                    <div class="pull-right">
+                        <input class="search" type="text" ng-model="query" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="panel-body main-grid">
+                    <!--<div class="text-center">-->
+                        <!--<pagination first-text="First Page" last-text="Last Page" next-text="Next Page"-->
+                                    <!--previous-text="Previous Page"-->
+                                    <!--boundary-links="true"-->
+                                    <!--items-per-page="perPage"-->
+                                    <!--class="centered-pager"-->
+                                    <!--ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>-->
+                    <!--</div>-->
+
+                    <div class="row">
+                        <table class="table table-hover table-striped table-condensed table-paged">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px;">S/N.</th>
+                                    <th style="width: 190px;">Actions</th>
+                                    <th>Subject Matter</th>
+                                    <th>Count</th>
+                                    <th style="width: 60px; text-align:center;">Merging</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="sm in subjectMatters | filter: query">
+                                    <td>{{$index+1}}.</td>
+                                    <td>
+                                        <button class="btn btn-info btn-xs" ng-click="showIssues(sm.subjectMatter)"> Issues</button>
+                                        <button ng-click="toggleCurrent(sm.subjectMatter, $index)" class="btn btn-xs btn-danger" title="Edit Subject Matter" data-content="{{sm.subjectMatter}}" data-template="views/sm-form.html" data-animation="am-flip-x" data-auto-close="1" bs-popover><i class="glyphicon glyphicon-edit"></i></button>
+                                        <button class="btn btn-xs btn-primary" ng-show="sm.standard=='0'" ng-click="setStandard(sm)">Standard</button>
+                                        <button class="btn btn-xs btn-warning" data-content="{{sm.subjectMatter}}" title="Change Legal Head" data-html="true" data-template="views/lh-list.html" data-auto-close="0" data-backdrop="static" bs-aside><i class="glyphicon glyphicon-refresh"></i></button>
+                                    </td>
+                                    <td>
+                                        {{sm.subjectMatter}}
+                                    </td>
+                                    <td align="center">{{sm.places}}</td>
+                                    <td><button class="btn btn-success btn-xs" ng-show="!parentSelected" ng-click="setParent(sm.subjectMatter, $index)">Set As Parent</button><button class="btn btn-danger btn-xs" ng-show="$index==selectedParent&&parentSelected" ng-click="unsetParent()">Click to Unset Parent</button><button class="btn btn-xs" ng-show="$index!==selectedParent&&parentSelected" ng-click="toggleMergeSet(sm.subjectMatter)" ng-class="{'btn-warning':forMerge(sm.subjectMatter), 'btn-info': !forMerge($index)}">{{forMerge(sm.subjectMatter)?"Remove From Merge Set":"Pick For Merging"}}</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--<div class="text-center">-->
+                        <!--<pagination first-text="First Page" last-text="Last Page" next-text="Next Page"-->
+                                    <!--previous-text="Previous Page"-->
+                                    <!--boundary-links="true"-->
+                                    <!--items-per-page="perPage"-->
+                                    <!--class="centered-pager"-->
+                                    <!--ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Standard
+                    <div class="pull-right">
+                        <input class="search" type="text" ng-model="squery" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="panel-body main-grid">
+                    <div class="row">
+                        <table class="table table-hover table-striped table-condensed">
+                            <thead>
+                            <tr>
+                                <th style="width: 40px;">S/N.</th>
+                                <th>Subject Matter</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="s in standardSubjectMatters | filter: squery">
+                                <td><button class="btn btn-xs disabled">{{$index+1}}.</button></td>
+                                <td>{{s.subjectmatter}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

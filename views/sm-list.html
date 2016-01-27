@@ -1,0 +1,32 @@
+<div class="aside left am-slide-left">
+    <div class="aside-dialog">
+        <div class="aside-content">
+            <div class="aside-header" ng-show="title">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h5 class="aside-title" ng-bind-html="title"></h5>
+            </div>
+            <div class="aside-body" ng-show="createForm">
+                <p>Create New Subject Matter</p>
+                <div class="form-group">
+                    <input type="text" ng-model="newSubjectMatter" class="form-control" required>
+                    {{newSubjectMatter}}
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" ng-click="newSubjectMatter=''; createForm=false;">Cancel</button>
+                    <button ng-click="changeSubjectMatter(newSubjectMatter, content) && $hide()" type="button" ng-disabled="newSubjectMatter.length < 3" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+            <div class="aside-body" style="padding: 0;" ng-show="!createForm">
+                <br>
+                <input class="search" type="text" ng-model="s_query.subject_matter" placeholder="Search..."><br>
+                <ul class="list-group">
+                    <li style="padding: 5px 10px;" class="list-group-item" ng-repeat="s in subjectMatters | filter: s_query"><a ng-click="changeSubjectMatter(s.subject_matter, content) && $hide()">{{s.subject_matter}}</a></li>
+                </ul>
+            </div>
+            <div class="aside-footer" ng-show="!createForm">
+                <button type="button" class="btn btn-danger" ng-click="$hide()">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="createForm=true;">Create New</button>
+            </div>
+        </div>
+    </div>
+</div>

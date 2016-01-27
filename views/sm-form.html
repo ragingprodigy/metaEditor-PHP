@@ -1,0 +1,15 @@
+<div class="popover" style="max-width: 400px; width: 400px;">
+    <div class="arrow"></div>
+    <h3 class="popover-title" ng-bind="title" ng-show="title"></h3>
+    <div class="popover-content">
+        <form name="popoverForm">
+            <div class="form-group">
+                <textarea rows="4" class="form-control" ng-model="content"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-danger" ng-click="$hide()">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="updateContent(content); $hide()">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>

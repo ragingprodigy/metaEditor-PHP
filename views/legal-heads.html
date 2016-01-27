@@ -1,0 +1,68 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {{title}} Legal Heads
+                    <div class="pull-right">
+                        <input class="search" type="text" ng-model="query.legal_head" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="panel-body main-grid">
+                    <div class="row">
+                        <table class="table table-hover table-striped table-condensed" id="lH-table">
+                            <thead>
+                            <tr>
+                                <th style="width: 60px;"></th>
+                                <th style="width: 40px;">S/N.</th>
+                                <th>Legal Head</th>
+                                <th>Occurrences</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="lH in legalHeads | filter: query" hover-row>
+                                <td><button class="btn btn-success btn-xs" ng-click="lH.active=true; showSubjectMatter(lH.legalHead)">Subject Matters</button></td>
+                                <td>{{$index+1}}.</td>
+                                <td>{{lH.legalHead}}</td>
+                                <td align="center">{{lH.places}}</td>
+                                <td><button class="btn btn-xs btn-danger c-btn" ng-click="activateRow(lH, $index)"><i class="glyphicon glyphicon-check"></i></button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Standard Legal Heads
+                    <div class="pull-right">
+                        <input class="search" type="text" ng-model="squery" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="panel-body main-grid">
+                    <div class="row">
+                        <table class="table table-hover table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">S/N.</th>
+                                    <th>Legal Head</th>
+                                    <th style="width: 60px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="lH in sLegalHeads | filter: squery">
+                                    <td><button class="btn btn-xs disabled">{{$index+1}}.</button></td>
+                                    <td>{{lH.legalhead}}</td>
+                                    <td><button class="btn btn-primary btn-xs" ng-show="rowActive" ng-click="doReplace(lH.legalhead)">Replace</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="aside right am-slide-left" style="max-width: 400px!important;">
+    <div class="aside-dialog">
+        <div class="aside-content">
+            <div class="aside-header" ng-show="title">
+                <button type="button" class="close btn-danger btn" ng-click="$hide()">&times;</button>
+                <h5 class="aside-title" ng-bind-html="title"></h5>
+            </div>
+
+            <div class="aside-body">
+
+                <div class="well" ng-show="detachingRatio">
+                    <form name="detachForm" ng-submit="detachForm.$valid && detachRatio(detachForm)">
+                        <div class="form-group">
+                            <select ng-model="rModel.newLegalHead" class="form-control" ng-change="lhChange()" required>
+                                <option ng-repeat="l in sLegalHeads">{{l.legalhead}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group" ng-show="sSMs.length">
+                            <select ng-model="rModel.newSubjectMatter" class="form-control" ng-change="smChange()"
+                                    required>
+                                <option ng-repeat="l in sSMs">{{l.subject_matter}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group" ng-show="sIssues.length">
+                            <select ng-model="rModel.newIssue" class="form-control"
+                                    ng-options="obj.issue for obj in sIssues">
+                                <option value="">SELECT ISSUE</option>
+                            </select>
+                            <input placeholder="Enter New Issue" ng-model="rModel.newIssue" class="form-control">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-sm btn-danger" ng-click="cancelDetach()"><i
+                                    class="glyphicon glyphicon-remove"></i> Cancel
+                            </button>
+                            <button type="submit" ng-disabled="detachForm.$invalid || submitting"
+                                    class="btn btn-sm btn-info"><i
+                                    class="glyphicon glyphicon-check"></i> Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <ul class="list-group">
+                    <li ng-repeat="p in issue.principles" class="list-group-item" ng-class="{well: p.selected}">
+                        <button type="button" class="btn btn-xs btn-danger" ng-click="doDetach(p, $index)"><i
+                                class="glyphicon glyphicon-edit"></i>
+                            Detach Principle</button>
+                        <b>{{p.suitno}}</b><br>
+                        {{p.principle}}<br>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="aside-footer">
+                <button type="button" class="btn btn-danger" ng-click="$hide()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

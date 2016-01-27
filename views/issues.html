@@ -1,0 +1,92 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Issues under <span class="badge badge-success">{{title}}</span> <button class="btn-xs btn btn-success" ng-show="mergeSet.length" ng-click="doMerge()">Merge Issues</button>
+                    <div class="pull-right">
+                        <input class="search" type="text" ng-model="query" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="panel-body main-grid">
+                    <div class="text-center">
+                        <pagination first-text="First Page" last-text="Last Page" next-text="Next Page"
+                                    previous-text="Previous Page"
+                                    boundary-links="true"
+                                    items-per-page="perPage"
+                                    class="centered-pager"
+                                    ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>
+                    </div>
+
+                    <div class="row">
+                        <table class="table table-hover table-striped table-condensed table-paged">
+                            <thead>
+                            <tr>
+                                <th style="width: 30px;">S/N.</th>
+                                <th style="width: 200px;">Actions</th>
+                                <th>Issue</th>
+                                <th>Occurrences</th>
+                                <th style="width: 60px; text-align:center;">Merging</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="sm in issues | filter: query">
+                                <td>{{$index+1}}.</td>
+                                <td>
+                                    <!--<button class="btn btn-xs btn-info" data-title="Principles in '{{sm.issue}}'" data-content="{{sm.principles}}"  data-html="true" bs-modal>Principles</button>-->
+                                    <button class="btn btn-xs btn-info" ng-click="showRatios(sm)">Principles
+                                    </button>
+                                    <button ng-click="toggleCurrent(sm.issue, $index)" type="button" class="btn btn-xs btn-danger" title="Edit Issue" data-content="{{sm.issue}}" data-template="views/sm-form.html" data-animation="am-flip-x" data-auto-close="1" bs-popover><i class="glyphicon glyphicon-edit"></i></button>
+                                    <button class="btn btn-xs btn-primary" ng-show="!sm.standard" ng-click="setStandard(sm)">Standard</button>
+                                    <button class="btn btn-xs btn-warning" data-content="{{sm.issue}}" title="Change Subject Matter" data-html="true" data-template="views/sm-list.html" data-auto-close="0" data-backdrop="static" bs-aside><i class="glyphicon glyphicon-refresh"></i></button>
+                                </td>
+                                <td>{{sm.issue}}</td>
+                                <td align="center">{{sm.places}}</td>
+                                <td><button class="btn btn-success btn-xs" ng-show="!parentSelected" ng-click="setParent(sm.issue, $index)">Set As Parent</button><button class="btn btn-danger btn-xs" ng-show="$index==selectedParent&&parentSelected" ng-click="unsetParent()">Click to Unset Parent</button><button class="btn btn-xs" ng-show="$index!==selectedParent&&parentSelected" ng-click="toggleMergeSet(sm.issue)" ng-class="{'btn-warning':forMerge(sm.issue), 'btn-info': !forMerge($index)}">{{forMerge(sm.issue)?"Remove From Merge Set":"Pick For Merging"}}</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center">
+                        <pagination first-text="First Page" last-text="Last Page" next-text="Next Page"
+                                    previous-text="Previous Page"
+                                    boundary-links="true"
+                                    items-per-page="perPage"
+                                    class="centered-pager"
+                                    ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Standard
+                    <div class="pull-right">
+                        <input class="search" type="text" ng-model="squery" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="panel-body main-grid">
+                    <div class="row">
+                        <table class="table table-hover table-striped table-condensed">
+                            <thead>
+                            <tr>
+                                <th style="width: 40px;">S/N.</th>
+                                <th>Issue</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="s in standardIssues | filter: squery">
+                                <td><button class="btn btn-xs disabled">{{$index+1}}.</button></td>
+                                <td>{{s.issue}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
