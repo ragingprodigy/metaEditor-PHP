@@ -221,22 +221,18 @@ class AppController extends RESTController {
 	}
 
 	/**
-	 * Get a case's alternate citations and associated
-	 *
-	 * @param $id
-	 *
+	 * Detach Ratio
 	 * @return array
 	 */
-	public function getCaseAlternateCitations($id) {
-		$return = array();
+	public function detachRatio() {
+		$post = $this->requestBody;
+		$tableName = "analysis";
 
-		$result=$this->getDi()->getShared('db')->query("SELECT bc.id as bc_id, name, acronym, year, part, citation, page FROM tbl_book_cases bc JOIN tbl_books b ON book_id = b.id JOIN tbl_reports r ON r.id=report_id WHERE bc.case_id =:id AND bc.deleted = :no ",
-			array("id" => $id, "no"=> 0));
-		$data = $result->fetchAll();
+		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
-		if (count($data))
-			$return = $data;
+		$r1 = $this->getDi()->getShared('db')->query("UPDATE $tableName SET `issues1` = :iss, `legal head` = :lh, subjectmatter = :sm, suitno41 = NULL, dt_modified=NOW() WHERE pk = :pk", array("iss"=>$post->newIssue,
+			"lh"=>$post->newLegalHead, "sm"=>$post->newSubjectMatter, "pk"=>$post->pk))->execute();
 
-		return $return;
+		return array($r1);
 	}
 } 
