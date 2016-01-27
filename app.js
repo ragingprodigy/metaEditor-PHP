@@ -2,7 +2,6 @@
 (function() {
   angular.module('metaEditor', ['ngResource', 'ngMessages', 'ngRoute', 'mgcrea.ngStrap', 'ui.bootstrap']).config([
     '$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
-      $locationProvider.html5Mode(true);
       return $routeProvider.when('/', {
         redirectTo: '/sc'
       }).when('/:court', {

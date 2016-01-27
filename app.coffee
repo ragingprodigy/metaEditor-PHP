@@ -2,7 +2,7 @@
 angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStrap','ui.bootstrap']
 
 .config ['$locationProvider','$routeProvider', ($locationProvider, $routeProvider) ->
-  $locationProvider.html5Mode true
+#  $locationProvider.html5Mode true
 
   $routeProvider
   .when '/',
