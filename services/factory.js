@@ -17,7 +17,7 @@
       mService = {
         url: 'api/v1/',
         mergeSubjectMatters: function(parent, mergeSet, court, legal_head) {
-          return $http.post(this.url + 'mergeSubjectMatters', {
+          return $http.post(this.url + 'mergeSubjectMatters?envelope=false', {
             parent: parent,
             mergeSet: mergeSet,
             court: court,
@@ -25,7 +25,7 @@
           });
         },
         mergeIssues: function(parent, mergeSet, court, legal_head, subject_matter) {
-          return $http.post(this.url + 'mergeIssues', {
+          return $http.post(this.url + 'mergeIssues?envelope=false', {
             parent: parent,
             mergeSet: mergeSet,
             court: court,
@@ -34,7 +34,7 @@
           });
         },
         updateSubjectMatter: function(old, newSM, court, legal_head) {
-          return $http.post(this.url + 'updateSubjectMatter', {
+          return $http.post(this.url + 'updateSubjectMatter?envelope=false', {
             old: old,
             "new": newSM,
             court: court,
@@ -42,7 +42,7 @@
           });
         },
         updateIssue: function(old, newIssue, court, legal_head, subject_matter) {
-          return $http.post(this.url + 'updateIssue', {
+          return $http.post(this.url + 'updateIssue?envelope=false', {
             old: old,
             "new": newIssue,
             court: court,
@@ -51,14 +51,14 @@
           });
         },
         setStandardSM: function(subject_matter, legal_head) {
-          return $http.post(this.url + 'setStandard', {
+          return $http.post(this.url + 'setStandard?envelope=false', {
             lh: legal_head,
             sm: subject_matter,
             subject_matter: true
           });
         },
         setStandardIssue: function(issue, subject_matter, legal_head) {
-          return $http.post(this.url + 'setStandard', {
+          return $http.post(this.url + 'setStandard?envelope=false', {
             iss: issue,
             lh: legal_head,
             sm: subject_matter,
@@ -66,7 +66,7 @@
           });
         },
         changeLegalHead: function(subject_matter, current_legal_head, new_legal_head, court) {
-          return $http.post(this.url + 'changeLegalHead', {
+          return $http.post(this.url + 'changeLegalHead?envelope=false', {
             old: current_legal_head,
             "new": new_legal_head,
             sm: subject_matter,
@@ -74,7 +74,7 @@
           });
         },
         changeSM: function(issue, current_sm, new_sm, legal_head, court) {
-          return $http.post(this.url + 'changeSubjectMatter', {
+          return $http.post(this.url + 'changeSubjectMatter?envelope=false', {
             old: current_sm,
             "new": new_sm,
             issue: issue,
@@ -83,7 +83,7 @@
           });
         },
         detachRatio: function(ratio) {
-          return $http.post(this.url + 'detachRatio', ratio);
+          return $http.post(this.url + 'detachRatio?envelope=false', ratio);
         }
       };
       return mService;

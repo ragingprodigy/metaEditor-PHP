@@ -36,7 +36,7 @@
               old: old,
               "new": lh,
               court: $routeParams.court
-            }).$promise.then(function(response) {
+            }).$promise.then(function() {
               $alert({
                 title: 'Info:',
                 content: "Records updated!",
@@ -132,7 +132,7 @@
       };
       $scope.doMerge = function() {
         var theParent;
-        theParent = $scope.subjectMatters[$scope.selectedParent].subject_matter;
+        theParent = $scope.subjectMatters[$scope.selectedParent].subjectMatter;
         if ($scope.mergeSet.length > 0 && confirm($routeParams.court + " Do you want to merge\n\n " + ($scope.mergeSet.join(', \n')) + " \n\n into " + theParent)) {
           return MergeService.mergeSubjectMatters(theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head).then(function(r) {
             var c;
@@ -140,7 +140,7 @@
               c = r.data[0];
               $alert({
                 title: 'Info:',
-                content: c.affectedRows + " records matched. " + c.changedRows + " records updated!",
+                content: "Records updated!",
                 placement: 'top-right',
                 type: 'info',
                 duration: 3
@@ -151,15 +151,14 @@
           });
         }
       };
-      $scope.setStandard = function(selectedMatter) {
+      $scope.setStandard = function(selectedMatter, index) {
         if (selectedMatter.standard === "0" && confirm("Are you sure you want to make \n\n " + selectedMatter.subjectMatter + " a Standard Subject Matter?")) {
           return MergeService.setStandardSM(selectedMatter.subjectMatter, $scope.legal_head).then(function(response) {
-            var c;
             if (response.data.length === 1) {
-              c = response.data[0];
+              $scope.subjectMatters[index].standard = "1";
               $alert({
                 title: 'Info:',
-                content: c.affectedRows + " records matched. " + c.changedRows + " records added!",
+                content: "Records Updated!",
                 placement: 'top-right',
                 type: 'info',
                 duration: 3

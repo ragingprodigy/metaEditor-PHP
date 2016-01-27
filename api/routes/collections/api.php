@@ -16,9 +16,9 @@ return call_user_func(function(){
 		->setLazy(true);
 	
 	$api->get('/legalHeads', 'getLegalHeads');
-	$api->get('/setStandard', 'setAsStandard');
+	$api->post('/setStandard', 'setAsStandard');
 
-	$api->get('/test', 'test');
+	$api->post('/mergeSubjectMatters', 'mergeSubjectMatters');
 
 	$api->get('/reports', 'reports');
 	$api->post('/parts', 'parts');

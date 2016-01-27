@@ -35,7 +35,7 @@
                                     <td>
                                         <button class="btn btn-info btn-xs" ng-click="showIssues(sm.subjectMatter)"> Issues</button>
                                         <button ng-click="toggleCurrent(sm.subjectMatter, $index)" class="btn btn-xs btn-danger" title="Edit Subject Matter" data-content="{{sm.subjectMatter}}" data-template="views/sm-form.html" data-animation="am-flip-x" data-auto-close="1" bs-popover><i class="glyphicon glyphicon-edit"></i></button>
-                                        <button class="btn btn-xs btn-primary" ng-show="sm.standard=='0'" ng-click="setStandard(sm)">Standard</button>
+                                        <button class="btn btn-xs btn-primary" ng-show="sm.standard=='0'" ng-click="setStandard(sm, $index)">Standard</button>
                                         <button class="btn btn-xs btn-warning" data-content="{{sm.subjectMatter}}" title="Change Legal Head" data-html="true" data-template="views/lh-list.html" data-auto-close="0" data-backdrop="static" bs-aside><i class="glyphicon glyphicon-refresh"></i></button>
                                     </td>
                                     <td>

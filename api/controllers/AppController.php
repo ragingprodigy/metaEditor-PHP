@@ -59,12 +59,24 @@ class AppController extends RESTController {
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function setAsStandard() {
+		$post = $this->requestBody;
+		$response = array();
 
+		if (isset($post->subject_matter)) {
+			$response = $this->getDi()->getShared('db')->query("insert ignore into subject_matters (legalhead, subjectmatter) values (:lh , :sm)", array("lh"=>$post->lh, "sm"=>$post->sm))->execute();
+		} else if (isset($post->issue)) {
+			$response = $this->getDi()->getShared('db')->query("insert ignore into standard_issues (legalhead, subjectmatter, issue) values (:lh, :sm, :iss)", array("lh"=>$post->lh, "sm"=>$post->sm, "iss"=>$post->iss))->execute();
+		}
+
+		return array($response);
 	}
 
-	public function test() {
-		return $_SERVER;
+	public function mergeSubjectMatters() {
+
 	}
 
 	/**

@@ -24,7 +24,7 @@ angular.module 'metaEditor'
       old = $scope.legalHeads[$scope.activeRow].legalHead
       if confirm "Replace #{$scope.legalHeads[$scope.activeRow].legalHead} with #{lh}?"
         AppServe.query { doReplace: true, old: old, new: lh, court: $routeParams.court }
-        .$promise.then (response) ->
+        .$promise.then ->
           $alert {
             title: 'Info:'
             content: "Records updated!"
@@ -110,7 +110,7 @@ angular.module 'metaEditor'
       $scope.mergeSet = filterFilter($scope.mergeSet, "!#{sm}")
 
   $scope.doMerge = ->
-    theParent = $scope.subjectMatters[$scope.selectedParent].subject_matter
+    theParent = $scope.subjectMatters[$scope.selectedParent].subjectMatter
     if $scope.mergeSet.length > 0 and confirm "#{$routeParams.court} Do you want to merge\n\n #{$scope.mergeSet.join(', \n')} \n\n into #{theParent}"
 
       MergeService.mergeSubjectMatters theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head
@@ -119,7 +119,7 @@ angular.module 'metaEditor'
           c = r.data[0]
           $alert {
             title: 'Info:'
-            content: "#{c.affectedRows} records matched. #{c.changedRows} records updated!"
+            content: "Records updated!"
             placement: 'top-right'
             type: 'info'
             duration: 3
@@ -127,15 +127,15 @@ angular.module 'metaEditor'
           $scope.unsetParent()
           $scope.getSubjectMatters()
 
-  $scope.setStandard = (selectedMatter) ->
+  $scope.setStandard = (selectedMatter, index) ->
     if selectedMatter.standard is "0" and confirm "Are you sure you want to make \n\n #{selectedMatter.subjectMatter} a Standard Subject Matter?"
       MergeService.setStandardSM selectedMatter.subjectMatter, $scope.legal_head
       .then (response) ->
         if response.data.length is 1
-          c = response.data[0]
+          $scope.subjectMatters[index].standard = "1" # Hide Action Button
           $alert {
             title: 'Info:'
-            content: "#{c.affectedRows} records matched. #{c.changedRows} records added!"
+            content: "Records Updated!"
             placement: 'top-right'
             type: 'info'
             duration: 3
