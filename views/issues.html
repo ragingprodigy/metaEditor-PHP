@@ -9,14 +9,14 @@
                     </div>
                 </div>
                 <div class="panel-body main-grid">
-                    <div class="text-center">
-                        <pagination first-text="First Page" last-text="Last Page" next-text="Next Page"
-                                    previous-text="Previous Page"
-                                    boundary-links="true"
-                                    items-per-page="perPage"
-                                    class="centered-pager"
-                                    ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>
-                    </div>
+                    <!--<div class="text-center">-->
+                        <!--<pagination first-text="First Page" last-text="Last Page" next-text="Next Page"-->
+                                    <!--previous-text="Previous Page"-->
+                                    <!--boundary-links="true"-->
+                                    <!--items-per-page="perPage"-->
+                                    <!--class="centered-pager"-->
+                                    <!--ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>-->
+                    <!--</div>-->
 
                     <div class="row">
                         <table class="table table-hover table-striped table-condensed table-paged">
@@ -34,7 +34,7 @@
                                 <td>{{$index+1}}.</td>
                                 <td>
                                     <!--<button class="btn btn-xs btn-info" data-title="Principles in '{{sm.issue}}'" data-content="{{sm.principles}}"  data-html="true" bs-modal>Principles</button>-->
-                                    <button class="btn btn-xs btn-info" ng-click="showRatios(sm)">Principles
+                                    <button class="btn btn-xs btn-info" ng-click="showRatios(sm, $index)">Principles
                                     </button>
                                     <button ng-click="toggleCurrent(sm.issue, $index)" type="button" class="btn btn-xs btn-danger" title="Edit Issue" data-content="{{sm.issue}}" data-template="views/sm-form.html" data-animation="am-flip-x" data-auto-close="1" bs-popover><i class="glyphicon glyphicon-edit"></i></button>
                                     <button class="btn btn-xs btn-primary" ng-show="!sm.standard" ng-click="setStandard(sm)">Standard</button>
@@ -48,14 +48,14 @@
                         </table>
                     </div>
 
-                    <div class="text-center">
-                        <pagination first-text="First Page" last-text="Last Page" next-text="Next Page"
-                                    previous-text="Previous Page"
-                                    boundary-links="true"
-                                    items-per-page="perPage"
-                                    class="centered-pager"
-                                    ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>
-                    </div>
+                    <!--<div class="text-center">-->
+                        <!--<pagination first-text="First Page" last-text="Last Page" next-text="Next Page"-->
+                                    <!--previous-text="Previous Page"-->
+                                    <!--boundary-links="true"-->
+                                    <!--items-per-page="perPage"-->
+                                    <!--class="centered-pager"-->
+                                    <!--ng-change="pageChanged()" total-items="totalResults" ng-model="currentPage" max-size="8" class="pagination-sm" num-pages="pages"></pagination>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>

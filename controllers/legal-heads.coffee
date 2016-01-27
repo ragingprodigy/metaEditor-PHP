@@ -274,8 +274,8 @@ angular.module 'metaEditor'
       $scope.pages = Math.ceil($scope.totalResults / $scope.perPage)
 
       $scope.issues = issues
-      _.each $scope.issues, (issue, index) ->
-        $scope.issues[index].principles = AppServe.query { getPrinciples: true, issue: issue.issue, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }
+#      _.each $scope.issues, (issue, index) ->
+#        $scope.issues[index].principles = AppServe.query { getPrinciples: true, issue: issue.issue, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }
 
   $scope.unsetParent()
   $scope.getIssues 1
@@ -290,18 +290,27 @@ angular.module 'metaEditor'
   $scope.pageChanged = ->
     $scope.getIssues $scope.currentPage
 
-  $scope.showRatios = (issue) ->
+  $scope.showRatios = (issue, index) ->
+
+    showAside = ->
+      myAside = $aside
+        title: "Principles Under Selected Issue"
+        scope: $scope
+        template: 'views/modal.html'
+        show: false
+        backdrop: 'static'
+
+      myAside.$promise.then ->
+        myAside.show()
+
     $scope.issue = issue
+    if $scope.issues[index].principles?.length
+      showAside()
+    else
+      AppServe.query { getPrinciples: true, issue: issue.issue, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }, (principles) ->
 
-    myAside = $aside
-      title: "Principles Under Selected Issue"
-      scope: $scope
-      template: 'views/modal.html'
-      show: false
-      backdrop: 'static'
-
-    myAside.$promise.then ->
-      myAside.show()
+        $scope.issues[index].principles = principles
+        showAside()
 
   $scope.doDetach = (ratio, $index) ->
     $scope.cancelDetach()

@@ -325,16 +325,7 @@
           $scope.totalResults = headers(CONF.countHeader);
           $scope.currentPage = headers(CONF.pageHeader);
           $scope.pages = Math.ceil($scope.totalResults / $scope.perPage);
-          $scope.issues = issues;
-          return _.each($scope.issues, function(issue, index) {
-            return $scope.issues[index].principles = AppServe.query({
-              getPrinciples: true,
-              issue: issue.issue,
-              court: $routeParams.court,
-              legal_head: $scope.legal_head,
-              subject: $scope.subject_matter
-            });
-          });
+          return $scope.issues = issues;
         });
       };
       $scope.unsetParent();
@@ -353,19 +344,36 @@
       $scope.pageChanged = function() {
         return $scope.getIssues($scope.currentPage);
       };
-      $scope.showRatios = function(issue) {
-        var myAside;
+      $scope.showRatios = function(issue, index) {
+        var ref, showAside;
+        showAside = function() {
+          var myAside;
+          myAside = $aside({
+            title: "Principles Under Selected Issue",
+            scope: $scope,
+            template: 'views/modal.html',
+            show: false,
+            backdrop: 'static'
+          });
+          return myAside.$promise.then(function() {
+            return myAside.show();
+          });
+        };
         $scope.issue = issue;
-        myAside = $aside({
-          title: "Principles Under Selected Issue",
-          scope: $scope,
-          template: 'views/modal.html',
-          show: false,
-          backdrop: 'static'
-        });
-        return myAside.$promise.then(function() {
-          return myAside.show();
-        });
+        if ((ref = $scope.issues[index].principles) != null ? ref.length : void 0) {
+          return showAside();
+        } else {
+          return AppServe.query({
+            getPrinciples: true,
+            issue: issue.issue,
+            court: $routeParams.court,
+            legal_head: $scope.legal_head,
+            subject: $scope.subject_matter
+          }, function(principles) {
+            $scope.issues[index].principles = principles;
+            return showAside();
+          });
+        }
       };
       $scope.doDetach = function(ratio, $index) {
         $scope.cancelDetach();

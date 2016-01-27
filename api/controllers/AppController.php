@@ -46,6 +46,12 @@ class AppController extends RESTController {
 			$response = $this->getDi()->getShared('db')->query("select `subjectmatter` from subject_matters where legalhead = :lh order by `subjectmatter` ASC;", array("lh"=>$_GET['lh']))->fetchAll();
 		} else if (isset($_GET['getSubjectMatters'])) {
 			$response = $this->getDi()->getShared('db')->query("select subjectmatter as subject_matter, count(*) as places, (CASE WHEN subjectmatter IN (SELECT subjectmatter from subject_matters WHERE legalhead=:lh) THEN 1 ELSE 0 END ) as standard from $tableName where `legal head` = :lh AND suitno NOT LIKE '%_deleted%' group by `subjectmatter` order by `subjectmatter` ASC;", array("lh"=>$_GET['legal_head']))->fetchAll();
+		} else if (isset($_GET['getSIssues'])) {
+			$response = $this->getDi()->getShared('db')->query("select `issue` from standard_issues where legalhead = :lh and subjectmatter = :sm order by `subjectmatter` ASC;", array("lh"=>$_GET['lh'], "sm"=>$_GET['sm']))->fetchAll();
+		} else if (isset($_GET['getIssues'])) {
+			$response = $this->getDi()->getShared('db')->query("select issues1 as issue, count(*) as places, ( CASE WHEN issues1 IN (SELECT issue from standard_issues WHERE legalhead=:lh AND subjectmatter=:sm ) THEN 1 ELSE 0 END ) as standard from $tableName where `legal head` = :lh and subjectmatter = :sm AND suitno NOT LIKE '%_deleted%' group by `issues1` order by `issues1` ASC;", array("lh"=>$_GET['legal_head'], "sm"=>$_GET['subject']))->fetchAll();
+		} else if (isset($_GET['getPrinciples'])) {
+			$response = $this->getDi()->getShared('db')->query("select * from $tableName where `legal head` = :lh and subjectmatter = :sm and issues1 = :iss AND suitno NOT LIKE '%_deleted%' order by `date` ASC;", array("lh"=>$_GET['legal_head'], "sm"=>$_GET['subject'], "iss"=>$_GET['issue']))->fetchAll();
 		}
 
 		return $response;
