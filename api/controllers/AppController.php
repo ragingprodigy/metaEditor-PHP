@@ -202,6 +202,25 @@ class AppController extends RESTController {
 	}
 
 	/**
+	 * Merge Issues
+	 * @return array
+	 */
+	public function mergeIssues() {
+		$post = $this->requestBody;
+		$tableName = "analysis";
+		$set = implode(",", $post->mergeSet);
+
+		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
+
+		$r1 = $this->getDi()->getShared('db')->query("update $tableName set `issues1` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :lh AND subjectmatter= :sm AND issues1 IN ('$set');", array("new"=>$post->parent,
+			"lh"=>$post->lh, "sm"=>$post->sm))->execute();
+
+		$r2 = $this->getDi()->getShared('db')->query("update standard_issues set issue = :new where subjectmatter = :sm AND legalhead = :lh AND issue IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
+
+		return array($r1, $r2);
+	}
+
+	/**
 	 * Get a case's alternate citations and associated
 	 *
 	 * @param $id

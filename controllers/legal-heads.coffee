@@ -257,7 +257,7 @@ angular.module 'metaEditor'
 
       MergeService.mergeIssues theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head, $scope.subject_matter
       .then (r)->
-        if r.data.length is 1
+        if r.data.length is 2
           $alert
             title: 'Info:'
             content: "Records updated!"
@@ -267,6 +267,7 @@ angular.module 'metaEditor'
 
           $scope.unsetParent()
           $scope.getIssues()
+          $scope.fetchStandard()
 
   $scope.getIssues = ->
     AppServe.query { getIssues: true, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }, (issues, headers) ->

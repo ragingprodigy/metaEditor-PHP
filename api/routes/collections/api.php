@@ -24,6 +24,7 @@ return call_user_func(function(){
 	$api->post('/updateIssue', 'updateIssue');
 
 	$api->post('/mergeSubjectMatters', 'mergeSubjectMatters');
+	$api->post('/mergeIssues', 'mergeIssues');
 
 	$api->get('/reports', 'reports');
 	$api->post('/parts', 'parts');

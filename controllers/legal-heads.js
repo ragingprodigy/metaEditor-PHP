@@ -297,7 +297,7 @@
         theParent = $scope.issues[$scope.selectedParent].issue;
         if ($scope.mergeSet.length > 0 && confirm("Do you want to merge\n\n " + ($scope.mergeSet.join(', \n')) + " \n\n into " + theParent)) {
           return MergeService.mergeIssues(theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head, $scope.subject_matter).then(function(r) {
-            if (r.data.length === 1) {
+            if (r.data.length === 2) {
               $alert({
                 title: 'Info:',
                 content: "Records updated!",
@@ -306,7 +306,8 @@
                 duration: 3
               });
               $scope.unsetParent();
-              return $scope.getIssues();
+              $scope.getIssues();
+              return $scope.fetchStandard();
             }
           });
         }
