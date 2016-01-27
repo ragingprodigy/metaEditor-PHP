@@ -75,6 +75,35 @@ class AppController extends RESTController {
 		return array($response);
 	}
 
+	/**
+	 * Rename Subject Matter
+	 * @return array
+	 */
+	public function updateSubjectMatter() {
+		$post = $this->requestBody;
+		$tableName = "analysis";
+
+		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
+
+		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
+			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `subjectmatter` = :new, suitno41 = NULL,
+			dt_modified=NOW() where `subjectmatter` = :old AND `legal head` = :lh;", array("old"=>$post->old,
+				"new"=>$post->new, "lh"=>$post->lh))->execute();
+			$r2 = $this->getDi()->getShared('db')->query("update subject_matters set
+			subjectmatter = :new where subjectmatter = :old and legalhead= :lh;", array("old"=>$post->old,
+				"new"=>$post->new, "lh"=>$post->lh))->execute();
+			$r3 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			subjectmatter = :new WHERE legalhead = :lh AND subjectmatter = :old", array("old"=>$post->old,
+				"new"=>$post->new, "lh"=>$post->lh))->execute();
+
+			return array($r1, $r2, $r3);
+		} else {
+			echo "No Data";
+			return array();
+		}
+
+	}
+
 	public function mergeSubjectMatters() {
 
 	}

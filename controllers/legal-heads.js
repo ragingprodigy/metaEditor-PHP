@@ -86,10 +86,9 @@
       };
       $scope.updateContent = function(newSubjectMatter) {
         if ($scope.currentSm !== void 0 && confirm("Change " + $scope.currentSm + " to " + newSubjectMatter + "?")) {
-          MergeService.updateSubjectMatter($scope.currentSm, newSubjectMatter, $routeParams.court, $scope.legal_head).then(function(response) {
-            var c;
-            if (response.data.length === 1) {
-              c = response.data[0];
+          return MergeService.updateSubjectMatter($scope.currentSm, newSubjectMatter, $routeParams.court, $scope.legal_head).then(function(response) {
+            if (response.data.length === 3) {
+              $scope.subjectMatters[$scope.selectedIndex].subjectMatter = newSubjectMatter;
               $alert({
                 title: 'Info:',
                 content: "Update Complete",
@@ -97,11 +96,10 @@
                 type: 'info',
                 duration: 3
               });
-              return $scope.getSubjectMatters();
             }
+            return $scope.currentSm = $scope.selectedIndex = void 0;
           });
         }
-        return $scope.currentSm = $scope.selectedIndex = void 0;
       };
       $scope.toggleCurrent = function(sm, index) {
         if ($scope.currentSm === void 0 || $scope.currentSm !== sm) {

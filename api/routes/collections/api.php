@@ -17,6 +17,7 @@ return call_user_func(function(){
 	
 	$api->get('/legalHeads', 'getLegalHeads');
 	$api->post('/setStandard', 'setAsStandard');
+	$api->post('/updateSubjectMatter', 'updateSubjectMatter');
 
 	$api->post('/mergeSubjectMatters', 'mergeSubjectMatters');
 

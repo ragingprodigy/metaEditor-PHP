@@ -72,8 +72,8 @@ angular.module 'metaEditor'
     if $scope.currentSm isnt undefined and confirm "Change #{$scope.currentSm} to #{newSubjectMatter}?"
       MergeService.updateSubjectMatter $scope.currentSm, newSubjectMatter, $routeParams.court, $scope.legal_head
       .then (response) ->
-        if response.data.length is 1
-          c = response.data[0]
+        if response.data.length is 3
+          $scope.subjectMatters[$scope.selectedIndex].subjectMatter = newSubjectMatter
           $alert
             title: 'Info:'
             content: "Update Complete"
@@ -81,9 +81,7 @@ angular.module 'metaEditor'
             type: 'info'
             duration: 3
 
-          $scope.getSubjectMatters()
-
-    $scope.currentSm = $scope.selectedIndex = undefined
+        $scope.currentSm = $scope.selectedIndex = undefined
 
   $scope.toggleCurrent = (sm, index) ->
     if $scope.currentSm is undefined or $scope.currentSm isnt sm
