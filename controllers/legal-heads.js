@@ -228,15 +228,14 @@
           });
         }
       };
-      $scope.setStandard = function(selectedIssue) {
-        if (!selectedIssue.standard && confirm("Are you sure you want to make \n\n " + selectedIssue.issue + " a Standard Issue?")) {
+      $scope.setStandard = function(selectedIssue, index) {
+        if (selectedIssue.standard === "0" && confirm("Are you sure you want to make \n\n " + selectedIssue.issue + " a Standard Issue?")) {
           return MergeService.setStandardIssue(selectedIssue.issue, $scope.subject_matter, $scope.legal_head).then(function(response) {
-            var c;
             if (response.data.length === 1) {
-              c = response.data[0];
+              $scope.issues[index].standard = "1";
               $alert({
                 title: 'Info:',
-                content: c.affectedRows + " records matched. " + c.changedRows + " records added!",
+                content: "Records added!",
                 placement: 'top-right',
                 type: 'info',
                 duration: 3

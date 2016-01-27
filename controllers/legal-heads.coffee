@@ -193,19 +193,20 @@ angular.module 'metaEditor'
 
           $scope.getIssues()
 
-  $scope.setStandard = (selectedIssue) ->
-    if not selectedIssue.standard and confirm "Are you sure you want to make \n\n #{selectedIssue.issue} a Standard Issue?"
+  $scope.setStandard = (selectedIssue, index) ->
+    if selectedIssue.standard is "0" and confirm "Are you sure you want to make \n\n #{selectedIssue.issue} a Standard
+ Issue?"
       MergeService.setStandardIssue selectedIssue.issue, $scope.subject_matter, $scope.legal_head
       .then (response) ->
         if response.data.length is 1
-          c = response.data[0]
-          $alert {
+          $scope.issues[index].standard = "1"
+          $alert
             title: 'Info:'
-            content: "#{c.affectedRows} records matched. #{c.changedRows} records added!"
+            content: "Records added!"
             placement: 'top-right'
             type: 'info'
             duration: 3
-          }
+
           $scope.fetchStandard()
 
   $scope.updateContent = (newIssue)->

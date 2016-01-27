@@ -37,7 +37,7 @@
                                     <button class="btn btn-xs btn-info" ng-click="showRatios(sm, $index)">Principles
                                     </button>
                                     <button ng-click="toggleCurrent(sm.issue, $index)" type="button" class="btn btn-xs btn-danger" title="Edit Issue" data-content="{{sm.issue}}" data-template="views/sm-form.html" data-animation="am-flip-x" data-auto-close="1" bs-popover><i class="glyphicon glyphicon-edit"></i></button>
-                                    <button class="btn btn-xs btn-primary" ng-show="!sm.standard" ng-click="setStandard(sm)">Standard</button>
+                                    <button class="btn btn-xs btn-primary" ng-show="sm.standard=='0'" ng-click="setStandard(sm, $index)">Standard</button>
                                     <button class="btn btn-xs btn-warning" data-content="{{sm.issue}}" title="Change Subject Matter" data-html="true" data-template="views/sm-list.html" data-auto-close="0" data-backdrop="static" bs-aside><i class="glyphicon glyphicon-refresh"></i></button>
                                 </td>
                                 <td>{{sm.issue}}</td>
