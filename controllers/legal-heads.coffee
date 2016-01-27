@@ -183,7 +183,7 @@ angular.module 'metaEditor'
     if confirm msg
       MergeService.changeSM selectedIssue, $scope.subject_matter, newSubjectMatter, $scope.legal_head, $routeParams.court
       .then (r) ->
-        if r.data.length is 1
+        if r.data.length is 2
           $alert
             title: 'Info:'
             content: "Update Complete"
@@ -192,6 +192,7 @@ angular.module 'metaEditor'
             duration: 3
 
           $scope.getIssues()
+          $scope.fetchStandard()
 
   $scope.setStandard = (selectedIssue, index) ->
     if selectedIssue.standard is "0" and confirm "Are you sure you want to make \n\n #{selectedIssue.issue} a Standard

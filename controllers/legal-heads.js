@@ -215,7 +215,7 @@
         msg = "Change the Subject Matter for \n\n" + selectedIssue + " from \n\n" + $scope.subject_matter + " to \n\n" + newSubjectMatter;
         if (confirm(msg)) {
           return MergeService.changeSM(selectedIssue, $scope.subject_matter, newSubjectMatter, $scope.legal_head, $routeParams.court).then(function(r) {
-            if (r.data.length === 1) {
+            if (r.data.length === 2) {
               $alert({
                 title: 'Info:',
                 content: "Update Complete",
@@ -223,7 +223,8 @@
                 type: 'info',
                 duration: 3
               });
-              return $scope.getIssues();
+              $scope.getIssues();
+              return $scope.fetchStandard();
             }
           });
         }

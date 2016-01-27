@@ -19,6 +19,7 @@ return call_user_func(function(){
 	$api->post('/setStandard', 'setAsStandard');
 	$api->post('/updateSubjectMatter', 'updateSubjectMatter');
 	$api->post('/changeLegalHead', 'changeLegalHead');
+	$api->post('/changeSubjectMatter', 'changeSubjectMatter');
 
 	$api->post('/updateIssue', 'updateIssue');
 

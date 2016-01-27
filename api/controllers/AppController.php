@@ -129,7 +129,7 @@ class AppController extends RESTController {
 	}
 
 	/**
-	 * Rename Subject Matter
+	 * Change Leagel Head for Subject Matter
 	 * @return array
 	 */
 	public function changeLegalHead() {
@@ -150,6 +150,31 @@ class AppController extends RESTController {
 				"new"=>$post->new, "sm"=>$post->sm))->execute();
 
 			return array($r1, $r2, $r3);
+		} else {
+			return array();
+		}
+
+	}
+
+	/**
+	 * Change Subject Matter of an Issue
+	 * @return array
+	 */
+	public function changeSubjectMatter() {
+		$post = $this->requestBody;
+		$tableName = "analysis";
+
+		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
+
+		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
+			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `subjectmatter` = :new, suitno41 = NULL, dt_modified=NOW() where `subjectmatter` = :old AND issues1 = :iss AND `legal head` = :lh ", array("old"=>$post->old, "new"=>$post->new,
+				"iss"=>$post->issue, "lh"=>$post->lh))->execute();
+
+			$r2 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			subjectmatter = :new WHERE issue = :iss AND subjectmatter = :old AND legalhead = :lh", array("old"=>$post->old,
+				"new"=>$post->new, "iss"=>$post->issue, "lh"=>$post->lh))->execute();
+
+			return array($r1, $r2);
 		} else {
 			return array();
 		}
