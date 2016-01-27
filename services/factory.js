@@ -9,13 +9,13 @@
     uk: 'United Kingdom'
   }).factory('AppServe', [
     '$resource', function($resource) {
-      return $resource('/api/v1/legalHeads/:_id?envelope=false');
+      return $resource('api/v1/legalHeads/:_id?envelope=false');
     }
   ]).factory('MergeService', [
     '$http', function($http) {
       var mService;
       mService = {
-        url: '/api/v1/',
+        url: 'api/v1/',
         mergeSubjectMatters: function(parent, mergeSet, court, legal_head) {
           return $http.post(this.url + 'mergeSubjectMatters', {
             parent: parent,

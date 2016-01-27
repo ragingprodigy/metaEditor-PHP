@@ -9,12 +9,12 @@ angular.module 'metaEditor'
   uk: 'United Kingdom'
 
 .factory 'AppServe', ['$resource', ($resource)->
-  $resource '/api/v1/legalHeads/:_id?envelope=false'
+  $resource 'api/v1/legalHeads/:_id?envelope=false'
 ]
 
 .factory 'MergeService', ['$http', ($http)->
   mService =
-    url: '/api/v1/'
+    url: 'api/v1/'
     mergeSubjectMatters: ( parent, mergeSet, court, legal_head ) ->
       $http.post this.url+'mergeSubjectMatters', { parent: parent, mergeSet: mergeSet, court: court, lh: legal_head }
 
