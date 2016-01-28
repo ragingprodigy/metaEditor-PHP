@@ -41,7 +41,7 @@ class AppController extends RESTController {
 		} else if (isset($_GET['getHeads'])) {
 			$response = $this->getDi()->getShared('db')->query("select `legal head` as legal_head, count(*) as places from $tableName where `legal head` is not null and `legal head` <>'' AND suitno NOT LIKE '%_deleted%' group by `legal head` order by `legal head` ASC;")->fetchAll();
 		} else if (isset($_GET['doReplace'])) {
-			$response = array($this->getDi()->getShared('db')->query("update $tableName set `legal head` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :old", array("new"=>$_GET['new'], "old"=>$_GET['old']))->execute());
+			$response = array($this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `legal head` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :old", array("new"=>$_GET['new'], "old"=>$_GET['old']))->execute());
 		} else if (isset($_GET['getSSubjectMatters'])) {
 			$response = $this->getDi()->getShared('db')->query("select `subjectmatter` from subject_matters where legalhead = :lh order by `subjectmatter` ASC;", array("lh"=>$_GET['lh']))->fetchAll();
 		} else if (isset($_GET['getSubjectMatters'])) {
@@ -85,13 +85,13 @@ class AppController extends RESTController {
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
 		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
-			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `subjectmatter` = :new, suitno41 = NULL,
+			$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `subjectmatter` = :new, suitno41 = NULL,
 			dt_modified=NOW() where `subjectmatter` = :old AND `legal head` = :lh;", array("old"=>$post->old,
 				"new"=>$post->new, "lh"=>$post->lh))->execute();
-			$r2 = $this->getDi()->getShared('db')->query("update subject_matters set
+			$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE subject_matters set
 			subjectmatter = :new where subjectmatter = :old and legalhead= :lh;", array("old"=>$post->old,
 				"new"=>$post->new, "lh"=>$post->lh))->execute();
-			$r3 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			$r3 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues SET
 			subjectmatter = :new WHERE legalhead = :lh AND subjectmatter = :old", array("old"=>$post->old,
 				"new"=>$post->new, "lh"=>$post->lh))->execute();
 
@@ -113,11 +113,11 @@ class AppController extends RESTController {
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
 		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
-			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `issues1` = :new, suitno41 = NULL,
+			$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `issues1` = :new, suitno41 = NULL,
 			dt_modified=NOW() where `issues1` = :old AND `legal head` = :lh AND subjectmatter = :sm;", array("old"=>$post->old,
 				"new"=>$post->new, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
 
-			$r2 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues SET
 			issue = :new WHERE legalhead = :lh AND issue = :old AND subjectmatter = :sm", array("old"=>$post->old,
 				"new"=>$post->new, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
 
@@ -139,13 +139,13 @@ class AppController extends RESTController {
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
 		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
-			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `legal head` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :old  AND subjectmatter = :sm;", array("old"=>$post->old, "new"=>$post->new,
+			$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `legal head` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :old  AND subjectmatter = :sm;", array("old"=>$post->old, "new"=>$post->new,
 				"sm"=>$post->sm))->execute();
 
-			$r2 = $this->getDi()->getShared('db')->query("update subject_matters set
+			$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE subject_matters set
 			legalhead = :new where subjectmatter = :sm and legalhead= :old;", array("old"=>$post->old,
 				"new"=>$post->new, "sm"=>$post->sm))->execute();
-			$r3 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			$r3 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues SET
 			legalhead = :new WHERE legalhead = :old AND subjectmatter = :sm", array("old"=>$post->old,
 				"new"=>$post->new, "sm"=>$post->sm))->execute();
 
@@ -167,10 +167,10 @@ class AppController extends RESTController {
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
 		if (strlen($post->old) > 0 && strlen($post->new) > 0) {
-			$r1 = $this->getDi()->getShared('db')->query("update $tableName set `subjectmatter` = :new, suitno41 = NULL, dt_modified=NOW() where `subjectmatter` = :old AND issues1 = :iss AND `legal head` = :lh ", array("old"=>$post->old, "new"=>$post->new,
+			$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `subjectmatter` = :new, suitno41 = NULL, dt_modified=NOW() where `subjectmatter` = :old AND issues1 = :iss AND `legal head` = :lh ", array("old"=>$post->old, "new"=>$post->new,
 				"iss"=>$post->issue, "lh"=>$post->lh))->execute();
 
-			$r2 = $this->getDi()->getShared('db')->query("UPDATE standard_issues SET
+			$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues SET
 			subjectmatter = :new WHERE issue = :iss AND subjectmatter = :old AND legalhead = :lh", array("old"=>$post->old,
 				"new"=>$post->new, "iss"=>$post->issue, "lh"=>$post->lh))->execute();
 
@@ -192,11 +192,11 @@ class AppController extends RESTController {
 
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
-		$r1 = $this->getDi()->getShared('db')->query("update $tableName set `subjectmatter` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
+		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `subjectmatter` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
 
-		$r2 = $this->getDi()->getShared('db')->query("update subject_matters set subjectmatter = :new where legalhead = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
+		$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE subject_matters set subjectmatter = :new where legalhead = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
 
-		$r3 = $this->getDi()->getShared('db')->query("update standard_issues set subjectmatter = :new where legalhead = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
+		$r3 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set subjectmatter = :new where legalhead = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
 
 		return array($r1, $r2, $r3);
 	}
@@ -212,10 +212,10 @@ class AppController extends RESTController {
 
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
-		$r1 = $this->getDi()->getShared('db')->query("update $tableName set `issues1` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :lh AND subjectmatter= :sm AND issues1 IN ('$set');", array("new"=>$post->parent,
+		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `issues1` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :lh AND subjectmatter= :sm AND issues1 IN ('$set');", array("new"=>$post->parent,
 			"lh"=>$post->lh, "sm"=>$post->sm))->execute();
 
-		$r2 = $this->getDi()->getShared('db')->query("update standard_issues set issue = :new where subjectmatter = :sm AND legalhead = :lh AND issue IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
+		$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set issue = :new where subjectmatter = :sm AND legalhead = :lh AND issue IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
 
 		return array($r1, $r2);
 	}
@@ -230,7 +230,7 @@ class AppController extends RESTController {
 
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
-		$r1 = $this->getDi()->getShared('db')->query("UPDATE $tableName SET `issues1` = :iss, `legal head` = :lh, subjectmatter = :sm, suitno41 = NULL, dt_modified=NOW() WHERE pk = :pk", array("iss"=>$post->newIssue,
+		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName SET `issues1` = :iss, `legal head` = :lh, subjectmatter = :sm, suitno41 = NULL, dt_modified=NOW() WHERE pk = :pk", array("iss"=>$post->newIssue,
 			"lh"=>$post->newLegalHead, "sm"=>$post->newSubjectMatter, "pk"=>$post->pk))->execute();
 
 		return array($r1);
