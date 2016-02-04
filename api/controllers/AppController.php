@@ -204,15 +204,24 @@ class AppController extends RESTController {
 	public function mergeSubjectMatters() {
 		$post = $this->requestBody;
 		$tableName = "analysis";
-		$set = implode(",", $post->mergeSet);
+
+		$mergeSet = "(";
+		foreach($post->mergeSet as $i) {
+			$mergeSet .= " subjectmatter = ? OR";
+		}
+
+		$mergeSet = substr($mergeSet, 0, strlen($mergeSet) - 3) . ")";
+
+		$toMerge = $post->mergeSet;
+		$args = array_merge(array($post->parent, $post->lh), $toMerge);
 
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
-		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `subjectmatter` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
+		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `subjectmatter` = ?, suitno41 = NULL, dt_modified=NOW() where `legal head` = ? AND $mergeSet;", $args)->execute();
 
-		$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE subject_matters set subjectmatter = :new where legalhead = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
+		$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE subject_matters set subjectmatter = ? where legalhead = ? AND $mergeSet;", $args)->execute();
 
-		$r3 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set subjectmatter = :new where legalhead = :lh AND subjectmatter IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh))->execute();
+		$r3 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set subjectmatter = ? where legalhead = ? AND $mergeSet;", $args)->execute();
 
 		return array($r1, $r2, $r3);
 	}
@@ -224,14 +233,24 @@ class AppController extends RESTController {
 	public function mergeIssues() {
 		$post = $this->requestBody;
 		$tableName = "analysis";
-		$set = implode(",", $post->mergeSet);
+
+		$mergeSet = $set = "(";
+		foreach($post->mergeSet as $i) {
+			$mergeSet .= " issues1 = ? OR";
+			$set .= " issue = ? OR";
+		}
+
+		$mergeSet = substr($mergeSet, 0, strlen($mergeSet) - 3) . ")";
+		$set = substr($set, 0, strlen($set) - 3) . ")";
 
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
-		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `issues1` = :new, suitno41 = NULL, dt_modified=NOW() where `legal head` = :lh AND subjectmatter= :sm AND issues1 IN ('$set');", array("new"=>$post->parent,
-			"lh"=>$post->lh, "sm"=>$post->sm))->execute();
+		$toMerge = $post->mergeSet;
+		$args = array_merge(array($post->parent, $post->lh, $post->sm), $toMerge);
 
-		$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set issue = :new where subjectmatter = :sm AND legalhead = :lh AND issue IN ('$set');", array("new"=>$post->parent, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
+		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName set `issues1` = ?, suitno41 = NULL, dt_modified=NOW() where `legal head` = ? AND subjectmatter= ? AND $mergeSet;", $args)->execute();
+
+		$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set issue = ? where subjectmatter = ? AND legalhead = ? AND $set;", $args)->execute();
 
 		return array($r1, $r2);
 	}
