@@ -84,6 +84,13 @@
         },
         detachRatio: function(ratio) {
           return $http.post(this.url + 'detachRatio?envelope=false', ratio);
+        },
+        removeStandardSM: function(legalHead, subjectMatter) {
+          return $http.post(this.url + 'removeStandard?envelope=false', {
+            lh: legalHead,
+            sm: subjectMatter,
+            subject_matter: true
+          });
         }
       };
       return mService;

@@ -82,6 +82,22 @@ angular.module 'metaEditor'
 
         $scope.currentSm = $scope.selectedIndex = undefined
 
+  $scope.deleteStandard = (sm, index) ->
+    if confirm "Delete #{sm} from Subject Matters?"
+      MergeService.removeStandardSM $scope.legal_head, sm
+      .then (r) ->
+        if r.data.length is 1
+          $alert
+            title: 'Info:'
+            content: "Update Complete"
+            placement: 'top-right'
+            type: 'info'
+            duration: 5
+
+          $scope.getSubjectMatters()
+          $scope.standardSubjectMatters.splice index, 1
+
+
   $scope.toggleCurrent = (sm, index) ->
     if $scope.currentSm is undefined or $scope.currentSm isnt sm
       $scope.currentSm = sm
@@ -141,8 +157,8 @@ angular.module 'metaEditor'
 
   $scope.perPage = 2
 
-  $scope.getSubjectMatters = (page) ->
-    AppServe.query { getSubjectMatters: true, court: $routeParams.court, legal_head: $scope.legal_head, page: page, per_page: $scope.perPage }, (sm) ->
+  $scope.getSubjectMatters = ->
+    AppServe.query { getSubjectMatters: true, court: $routeParams.court, legal_head: $scope.legal_head }, (sm) ->
       $scope.subjectMatters  = sm
 
   $scope.fetchStandard = ->
@@ -154,7 +170,7 @@ angular.module 'metaEditor'
     $location.path curPath+"/"+sm.hexEncode()
 
   $scope.unsetParent()
-  $scope.getSubjectMatters 1
+  $scope.getSubjectMatters()
   $scope.fetchStandard()
 
   # Load Page

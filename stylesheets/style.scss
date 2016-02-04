@@ -350,6 +350,19 @@ table#lH-table tr.highlight td button.c-btn, table#lH-table tr:hover td button.c
   }
 }
 
+
+
+.deletable {
+  .delete-button {
+    display: none;
+    float: right;
+  }
+
+  &:hover .delete-button {
+    display: block;
+  }
+}
+
 .aside {
   .aside-dialog {
 

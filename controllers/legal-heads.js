@@ -99,6 +99,23 @@
           });
         }
       };
+      $scope.deleteStandard = function(sm, index) {
+        if (confirm("Delete " + sm + " from Subject Matters?")) {
+          return MergeService.removeStandardSM($scope.legal_head, sm).then(function(r) {
+            if (r.data.length === 1) {
+              $alert({
+                title: 'Info:',
+                content: "Update Complete",
+                placement: 'top-right',
+                type: 'info',
+                duration: 5
+              });
+              $scope.getSubjectMatters();
+              return $scope.standardSubjectMatters.splice(index, 1);
+            }
+          });
+        }
+      };
       $scope.toggleCurrent = function(sm, index) {
         if ($scope.currentSm === void 0 || $scope.currentSm !== sm) {
           $scope.currentSm = sm;
@@ -164,13 +181,11 @@
         }
       };
       $scope.perPage = 2;
-      $scope.getSubjectMatters = function(page) {
+      $scope.getSubjectMatters = function() {
         return AppServe.query({
           getSubjectMatters: true,
           court: $routeParams.court,
-          legal_head: $scope.legal_head,
-          page: page,
-          per_page: $scope.perPage
+          legal_head: $scope.legal_head
         }, function(sm) {
           return $scope.subjectMatters = sm;
         });
@@ -189,7 +204,7 @@
         return $location.path(curPath + "/" + sm.hexEncode());
       };
       $scope.unsetParent();
-      $scope.getSubjectMatters(1);
+      $scope.getSubjectMatters();
       $scope.fetchStandard();
       return $scope.pageChanged = function() {
         return $scope.getSubjectMatters($scope.currentPage);

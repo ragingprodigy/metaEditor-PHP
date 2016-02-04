@@ -28,6 +28,8 @@ return call_user_func(function(){
 
 	$api->post('/detachRatio', 'detachRatio');
 
+	$api->post('/removeStandard', 'removeStandard');
+
 	$api->post('/newBookCase/{id:[0-9]+}', 'newBookCase');
 	$api->get('/bookCases/{id:[0-9]+}', 'getCases');
 	$api->get('/alternateCitations/{id:[0-9]+}', 'getCaseAlternateCitations');

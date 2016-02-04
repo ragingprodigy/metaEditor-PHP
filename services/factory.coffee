@@ -42,5 +42,12 @@ angular.module 'metaEditor'
     detachRatio: (ratio) ->
       $http.post this.url+'detachRatio?envelope=false', ratio
 
+    removeStandardSM: (legalHead, subjectMatter) ->
+      $http.post this.url+'removeStandard?envelope=false', {
+        lh: legalHead
+        sm: subjectMatter
+        subject_matter: true
+      }
+
   mService
 ]

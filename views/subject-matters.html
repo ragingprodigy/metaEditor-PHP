@@ -79,7 +79,12 @@
                             <tbody>
                             <tr ng-repeat="s in standardSubjectMatters | filter: squery">
                                 <td><button class="btn btn-xs disabled">{{$index+1}}.</button></td>
-                                <td>{{s.subjectmatter}}</td>
+                                <td class="deletable">{{s.subjectmatter}} <button
+                                        ng-click="deleteStandard(s.subjectmatter, $index)"
+                                        class="btn btn-danger btn-xs delete-button"><i
+                                        class="glyphicon glyphicon-remove-sign"></i>
+                                </button>
+                                </td>
                             </tr>
                             </tbody>
                         </table>

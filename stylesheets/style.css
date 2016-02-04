@@ -5666,6 +5666,12 @@ table#lH-table tr.highlight td button.c-btn, table#lH-table tr:hover td button.c
   .datepicker.dropdown-menu.datepicker-mode-1 tbody button, .datepicker.dropdown-menu.datepicker-mode-2 tbody button {
     height: 65px; }
 
+.deletable .delete-button {
+  display: none;
+  float: right; }
+.deletable:hover .delete-button {
+  display: block; }
+
 .aside .aside-dialog .aside-header {
   position: fixed;
   width: 400px;

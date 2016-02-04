@@ -75,6 +75,22 @@ class AppController extends RESTController {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function removeStandard() {
+		$post = $this->requestBody;
+		$response = array();
+
+		if (isset($post->subject_matter)) {
+			$response = $this->getDi()->getShared('db')->query("DELETE FROM subject_matters WHERE legalhead = :lh  AND subjectmatter = :sm", array("lh"=>$post->lh, "sm"=>$post->sm))->execute();
+		} else if (isset($post->issue)) {
+			$response = $this->getDi()->getShared('db')->query("DELETE FROM standard_issues WHERE legalhead = :lh AND subjectmatter = :sm AND issue = :iss", array("lh"=>$post->lh, "sm"=>$post->sm, "iss"=>$post->iss))->execute();
+		}
+
+		return array($response);
+	}
+
+	/**
 	 * Rename Subject Matter
 	 * @return array
 	 */
