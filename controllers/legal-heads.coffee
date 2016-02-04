@@ -83,7 +83,7 @@ angular.module 'metaEditor'
         $scope.currentSm = $scope.selectedIndex = undefined
 
   $scope.deleteStandard = (sm, index) ->
-    if confirm "Delete #{sm} from Subject Matters?"
+    if confirm "Delete #{sm} from Standard Subject Matters?"
       MergeService.removeStandardSM $scope.legal_head, sm
       .then (r) ->
         if r.data.length is 1
@@ -96,7 +96,6 @@ angular.module 'metaEditor'
 
           $scope.getSubjectMatters()
           $scope.standardSubjectMatters.splice index, 1
-
 
   $scope.toggleCurrent = (sm, index) ->
     if $scope.currentSm is undefined or $scope.currentSm isnt sm
@@ -242,6 +241,21 @@ angular.module 'metaEditor'
           $scope.getIssues()
           $scope.fetchStandard()
         $scope.currentIss = $scope.selectedIndex = undefined
+
+  $scope.deleteStandard = (issue, index) ->
+    if confirm "Delete #{issue} from Standard Issues?"
+      MergeService.removeStandardIssue $scope.legal_head, $scope.subject_matter, issue
+      .then (r) ->
+        if r.data.length is 1
+          $alert
+            title: 'Info:'
+            content: "Update Complete"
+            placement: 'top-right'
+            type: 'info'
+            duration: 5
+
+          $scope.getIssues()
+          $scope.standardIssues.splice index, 1
 
   $scope.toggleCurrent = (iss, index) ->
     if $scope.currentIss is undefined or $scope.currentIss isnt iss

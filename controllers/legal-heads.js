@@ -100,7 +100,7 @@
         }
       };
       $scope.deleteStandard = function(sm, index) {
-        if (confirm("Delete " + sm + " from Subject Matters?")) {
+        if (confirm("Delete " + sm + " from Standard Subject Matters?")) {
           return MergeService.removeStandardSM($scope.legal_head, sm).then(function(r) {
             if (r.data.length === 1) {
               $alert({
@@ -277,6 +277,23 @@
               $scope.fetchStandard();
             }
             return $scope.currentIss = $scope.selectedIndex = void 0;
+          });
+        }
+      };
+      $scope.deleteStandard = function(issue, index) {
+        if (confirm("Delete " + issue + " from Standard Issues?")) {
+          return MergeService.removeStandardIssue($scope.legal_head, $scope.subject_matter, issue).then(function(r) {
+            if (r.data.length === 1) {
+              $alert({
+                title: 'Info:',
+                content: "Update Complete",
+                placement: 'top-right',
+                type: 'info',
+                duration: 5
+              });
+              $scope.getIssues();
+              return $scope.standardIssues.splice(index, 1);
+            }
           });
         }
       };

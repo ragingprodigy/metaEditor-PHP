@@ -91,6 +91,14 @@
             sm: subjectMatter,
             subject_matter: true
           });
+        },
+        removeStandardIssue: function(legalHead, subjectMatter, issue) {
+          return $http.post(this.url + 'removeStandard?envelope=false', {
+            lh: legalHead,
+            sm: subjectMatter,
+            iss: issue,
+            issue: true
+          });
         }
       };
       return mService;

@@ -49,5 +49,13 @@ angular.module 'metaEditor'
         subject_matter: true
       }
 
+    removeStandardIssue: (legalHead, subjectMatter, issue) ->
+      $http.post this.url+'removeStandard?envelope=false', {
+        lh: legalHead
+        sm: subjectMatter
+        iss: issue
+        issue: true
+      }
+
   mService
 ]
