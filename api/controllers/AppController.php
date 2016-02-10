@@ -7,6 +7,8 @@
  */
 
 namespace PhalconRest\Controllers;
+use PhalconRest\Models\ActionLog;
+use PhalconRest\Models\User;
 
 
 /**
@@ -67,8 +69,12 @@ class AppController extends RESTController {
 
 		if (isset($post->subject_matter)) {
 			$response = $this->getDi()->getShared('db')->query("insert ignore into subject_matters (legalhead, subjectmatter) values (:lh , :sm)", array("lh"=>$post->lh, "sm"=>$post->sm))->execute();
+
+			$this->writeLog("setSMAsStandard", 1, "Set the Subject Matter {$post->sm} in {$post->lh} AS a STANDARD");
 		} else if (isset($post->issue)) {
 			$response = $this->getDi()->getShared('db')->query("insert ignore into standard_issues (legalhead, subjectmatter, issue) values (:lh, :sm, :iss)", array("lh"=>$post->lh, "sm"=>$post->sm, "iss"=>$post->iss))->execute();
+
+			$this->writeLog("setIssueAsStandard", 1, "Set the Issue {$post->iss} in {$post->lh} -> {$post->sm} AS a STANDARD");
 		}
 
 		return array($response);
@@ -111,6 +117,8 @@ class AppController extends RESTController {
 			subjectmatter = :new WHERE legalhead = :lh AND subjectmatter = :old", array("old"=>$post->old,
 				"new"=>$post->new, "lh"=>$post->lh))->execute();
 
+			$this->writeLog("updateSubjectMatter", 1, "Renamed Subject Matter in {$post->lh}; FROM {$post->old} => TO => {$post->new}");
+
 			return array($r1, $r2, $r3);
 		} else {
 			return array();
@@ -137,6 +145,9 @@ class AppController extends RESTController {
 			issue = :new WHERE legalhead = :lh AND issue = :old AND subjectmatter = :sm", array("old"=>$post->old,
 				"new"=>$post->new, "lh"=>$post->lh, "sm"=>$post->sm))->execute();
 
+			$this->writeLog("updateIssue", 1, "Renamed Issue in {$post->lh} -> {$post->sm};  FROM {$post->old} => TO =>
+			{$post->new}");
+
 			return array($r1, $r2);
 		} else {
 			return array();
@@ -145,7 +156,7 @@ class AppController extends RESTController {
 	}
 
 	/**
-	 * Change Leagel Head for Subject Matter
+	 * Change Legal Head for Subject Matter
 	 * @return array
 	 */
 	public function changeLegalHead() {
@@ -164,6 +175,9 @@ class AppController extends RESTController {
 			$r3 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues SET
 			legalhead = :new WHERE legalhead = :old AND subjectmatter = :sm", array("old"=>$post->old,
 				"new"=>$post->new, "sm"=>$post->sm))->execute();
+
+			$this->writeLog("changeLegalHead", 1, "Change the Legal Head of the Subject Matter: {$post->sm} FROM
+			{$post->old} => TO => {$post->new}");
 
 			return array($r1, $r2, $r3);
 		} else {
@@ -189,6 +203,8 @@ class AppController extends RESTController {
 			$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues SET
 			subjectmatter = :new WHERE issue = :iss AND subjectmatter = :old AND legalhead = :lh", array("old"=>$post->old,
 				"new"=>$post->new, "iss"=>$post->issue, "lh"=>$post->lh))->execute();
+
+			$this->writeLog("changeSubjectMatter", 1, "Change the Subject Matter of the Issue: {$post->issue} FROM {$post->old} => TO => {$post->new}");
 
 			return array($r1, $r2);
 		} else {
@@ -223,6 +239,9 @@ class AppController extends RESTController {
 
 		$r3 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set subjectmatter = ? where legalhead = ? AND $mergeSet;", $args)->execute();
 
+		$this->writeLog("mergeSubjectMatters", count($toMerge), "Merged the following Subject Matters: ". implode(" ;
+		 ", $toMerge) ." WHICH ARE IN {$post->lh} INTO {$post->parent}");
+
 		return array($r1, $r2, $r3);
 	}
 
@@ -252,6 +271,9 @@ class AppController extends RESTController {
 
 		$r2 = $this->getDi()->getShared('db')->query("UPDATE IGNORE standard_issues set issue = ? where subjectmatter = ? AND legalhead = ? AND $set;", $args)->execute();
 
+		$this->writeLog("mergeIssues", count($toMerge), "Merged the following issues: ". implode(" ; ", $toMerge)
+			." WHICH ARE IN {$post->lh} -> {$post->sm} INTO {$post->parent}");
+
 		return array($r1, $r2);
 	}
 
@@ -268,6 +290,33 @@ class AppController extends RESTController {
 		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName SET `issues1` = :iss, `legal head` = :lh, subjectmatter = :sm, suitno41 = NULL, dt_modified=NOW() WHERE pk = :pk", array("iss"=>$post->newIssue,
 			"lh"=>$post->newLegalHead, "sm"=>$post->newSubjectMatter, "pk"=>$post->pk))->execute();
 
+		$this->writeLog("detachRatio", 1, "Move Ratio with PK = {$post->pk} to the Following location: {$post->newLegalHead} -> {$post->newSubjectMatter} -> {$post->newIssue}");
+
 		return array($r1);
+	}
+
+	/**
+	 * Write Action Log
+	 *
+	 * @param $action
+	 * @param $count
+	 * @param $meta
+	 */
+	private function writeLog($action, $count, $meta) {
+		$headers = apache_request_headers();
+		$userKey = $headers['X_API_KEY'];
+
+		// Fetch User BY Key
+		$user = User::findFirstByPrivateKey($userKey);
+
+		if ($user) {
+			$al = new ActionLog();
+			$al->setUserId($user->getId())->setAction($action)->setItems($count)->setMeta($meta);
+
+			$al->create();
+
+			if ($al->getMessages())
+				error_log(print_r($this->modelError($al)));
+		}
 	}
 } 
