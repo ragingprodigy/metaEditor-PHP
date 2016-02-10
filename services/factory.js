@@ -103,6 +103,104 @@
       };
       return mService;
     }
+  ]).factory('AuthToken', [
+    '$window', function($window) {
+      return {
+        get: function() {
+          return $window.localStorage.getItem("LP-ME_api_key");
+        },
+        set: function(value) {
+          return $window.localStorage.setItem("LP-ME_api_key", value);
+        },
+        clear: function() {
+          return $window.localStorage.removeItem("LP-ME_api_key");
+        }
+      };
+    }
+  ]).factory('Session', [
+    '$window', function($window) {
+      return {
+        get: function(key) {
+          return $window.sessionStorage.getItem("__" + key);
+        },
+        set: function(key, value) {
+          return $window.sessionStorage.setItem("__" + key, value);
+        },
+        clear: function(key) {
+          return $window.sessionStorage.removeItem("__" + key);
+        }
+      };
+    }
+  ]).constant('AuthEvents', {
+    loginSuccess: "loginSuccess",
+    loginFailed: "loginFailed",
+    notAuthenticated: "notAuthenticated",
+    notAuthorized: "notAuthorized",
+    sessionTimeout: "sessionTimeout"
+  }).constant('AppConstants', {
+    guest: "guest",
+    authorized: "authorized"
+  }).factory('AuthService', [
+    '$http', 'Session', 'AuthToken', function($http, Session, AuthToken) {
+      return {
+        login: function(username, password) {
+          return $http.post('api/v1/users/login/', {
+            username: username,
+            password: password
+          }).then(function(response) {
+            if (response.data._meta.status === 'SUCCESS') {
+              AuthToken.set(response.data.records.privateKey);
+            }
+            Session.set("currentUser", JSON.stringify(response.data.records.user));
+            return response.data.records.user;
+          });
+        },
+        isGuest: function() {
+          return AuthToken.get() === null;
+        },
+        currentUser: function() {
+          return JSON.parse(Session.get("currentUser"));
+        },
+        logout: function() {
+          Session.clear("currentUser");
+          return AuthToken.clear();
+        }
+      };
+    }
+  ]).factory("AuthInterceptor", [
+    '$q', '$injector', function($q, $injector) {
+      return {
+        request: function(config) {
+          var AuthToken, token;
+          AuthToken = $injector.get("AuthToken");
+          token = AuthToken.get();
+          config.headers = (config != null ? config.headers : void 0) || {};
+          if ((token != null) && config.url.match(new RegExp('api/v1/'))) {
+            config.headers.X_API_KEY = token;
+          }
+          return config || $q.when(config);
+        },
+        requestError: function(rejectReason) {
+          return rejectReason;
+        },
+        response: function(response) {
+          return response;
+        },
+        responseError: function(response) {
+          var AuthEvents, matchesAuthenticatePath;
+          AuthEvents = $injector.get('AuthEvents');
+          matchesAuthenticatePath = response.config && response.config.url.match(new RegExp('api/v1/users/login/'));
+          if (!matchesAuthenticatePath) {
+            $injector.get('$rootScope').$broadcast({
+              401: AuthEvents.notAuthenticated,
+              403: AuthEvents.notAuthorized,
+              409: AuthEvents.sessionTimeout
+            }[response.status], response);
+          }
+          return $q.reject(response);
+        }
+      };
+    }
   ]);
 
 }).call(this);

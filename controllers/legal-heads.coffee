@@ -1,5 +1,20 @@
 angular.module 'metaEditor'
 
+.controller 'LoginCtrl', ['$scope', 'AuthService', '$rootScope', 'AuthEvents', '$window', '$location', ($scope, AuthService, $rootScope, AuthEvents, $window, $location) ->
+
+  $scope.user = {}
+
+  if not AuthService.isGuest()
+    $location.path "/sc"
+
+  $scope.login = (theForm) ->
+    if not theForm.$invalid
+      AuthService.login($scope.user.username, $scope.user.password).then (user)->
+        $location.path "/sc"
+      , ->
+        $rootScope.$broadcast(AuthEvents.loginFailed)
+]
+
 .controller 'LegalHeadsCtrl', ['$scope', '$routeParams', 'LP', 'AppServe', '$location', '$alert', ($scope, $routeParams, LP, AppServe, $location, $alert )->
   $scope.title = LP[$routeParams.court]
   $scope.rowActive = false

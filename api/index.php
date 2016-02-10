@@ -95,37 +95,35 @@ $app->setDI($di);
 
 $app->before(function() use ($app, $di) {
 
-//	switch($app->getRouter()->getRewriteUri()) {
-//		case '/v1/users/login/':
-//		case '/v1/users/':
-//		case '/v1/users/register/':
-//			return true;
-//			break;
-//		case '/example/route':
-//			return true;
-//			break;
-//	}
-//
-//	// Basic auth, for programmatic responses
-//	$headers = apache_request_headers();
-//	if(isset($headers['X_API_KEY'])){
-//		$user = new \PhalconRest\Controllers\UserController();
-//		if (!$user->loginWithPrivateKey($headers['X_API_KEY']))
-//			throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired API Key", 403);
-//		else
-//			return true;
-//	}
-//
-//	// If we made it this far, we have no valid auth method, throw a 401.
-//	throw new \PhalconRest\Exceptions\HTTPException(
-//		'Must login or provide credentials.',
-//		401,
-//		array(
-//			'dev' => 'Please provide credentials by either passing in a session token via cookie, or providing password and username via BASIC authentication.',
-//			'internalCode' => 'Unauth:1'
-//		)
-//	);
+	switch($app->getRouter()->getRewriteUri()) {
+		case '/v1/users/login/':
+		case '/v1/users/register/':
+			return true;
+			break;
+		case '/example/route':
+			return true;
+			break;
+	}
 
+	// Basic auth, for programmatic responses
+	$headers = apache_request_headers();
+	if(isset($headers['X_API_KEY'])){
+		$user = new \PhalconRest\Controllers\UserController();
+		if (!$user->loginWithPrivateKey($headers['X_API_KEY']))
+			throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired API Key", 403);
+		else
+			return true;
+	}
+
+	// If we made it this far, we have no valid auth method, throw a 401.
+	throw new \PhalconRest\Exceptions\HTTPException(
+		'Must login or provide credentials.',
+		401,
+		array(
+			'dev' => 'Please provide credentials by either passing in a session token via cookie, or providing password and username via BASIC authentication.',
+			'internalCode' => 'Unauth:1'
+		)
+	);
 });
 
 

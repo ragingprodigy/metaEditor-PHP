@@ -59,3 +59,90 @@ angular.module 'metaEditor'
 
   mService
 ]
+
+.factory 'AuthToken', ['$window', ($window) ->
+  get: ->
+    $window.localStorage.getItem("LP-ME_api_key")
+
+  set: (value) ->
+    $window.localStorage.setItem("LP-ME_api_key", value)
+
+  clear: ->
+    $window.localStorage.removeItem("LP-ME_api_key")
+]
+
+.factory 'Session', ['$window', ($window) ->
+  get: (key) ->
+    $window.sessionStorage.getItem "__#{key}"
+
+  set: (key, value) ->
+    $window.sessionStorage.setItem "__#{key}", value
+
+  clear: (key) ->
+    $window.sessionStorage.removeItem "__#{key}"
+]
+
+.constant 'AuthEvents', {
+  loginSuccess: "loginSuccess"
+  loginFailed: "loginFailed"
+  notAuthenticated: "notAuthenticated"
+  notAuthorized: "notAuthorized"
+  sessionTimeout: "sessionTimeout"
+}
+
+.constant 'AppConstants', {
+  guest: "guest"
+  authorized: "authorized"
+}
+
+.factory 'AuthService', ['$http', 'Session', 'AuthToken', ($http, Session, AuthToken) ->
+  login: (username, password) ->
+    $http.post('api/v1/users/login/', {
+      username: username
+      password: password
+    }).then (response) ->
+      AuthToken.set(response.data.records.privateKey) if response.data._meta.status == 'SUCCESS'
+      Session.set "currentUser", JSON.stringify response.data.records.user
+      response.data.records.user
+
+  isGuest: ->
+    AuthToken.get() is null
+
+  currentUser: ->
+    JSON.parse(Session.get "currentUser")
+
+  logout: ->
+    Session.clear "currentUser"
+    AuthToken.clear()
+]
+
+.factory "AuthInterceptor", ['$q', '$injector', ($q, $injector) ->
+  #This will be called on every outgoing http request
+  request: (config)->
+    AuthToken = $injector.get("AuthToken")
+    token = AuthToken.get()
+    config.headers = config?.headers || {}
+    if token? and config.url.match(new RegExp('api/v1/')) then config.headers.X_API_KEY = token
+
+    config || $q.when(config)
+
+  requestError: (rejectReason) ->
+    rejectReason
+
+  response: (response) ->
+    #Unblock the UI
+    response
+
+  # This will be called on every incoming response that has en error status code
+  responseError: (response) ->
+    AuthEvents = $injector.get('AuthEvents')
+    matchesAuthenticatePath = response.config && response.config.url.match( new RegExp 'api/v1/users/login/' )
+    if not matchesAuthenticatePath
+      $injector.get('$rootScope').$broadcast {
+        401: AuthEvents.notAuthenticated,
+        403: AuthEvents.notAuthorized,
+        409: AuthEvents.sessionTimeout
+      }[response.status], response
+
+    $q.reject response
+]

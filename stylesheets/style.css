@@ -5679,13 +5679,7 @@ table#lH-table tr.highlight td button.c-btn, table#lH-table tr:hover td button.c
 .aside .aside-dialog .aside-body {
   padding: 100px 15px 15px !important; }
 
-/**
- * angular-strap
- * @version v2.0.5 - 2014-08-07
- * @link http://mgcrea.github.io/angular-strap
- * @author Olivier Louvignes (olivier@mg-crea.com)
- * @license MIT License, http://www.opensource.org/licenses/MIT
- */
+.m-r-10
 .carousel-inner > .item > a > img, .carousel-inner > .item > img, .thumbnail a > img, .thumbnail > img {
   display: block;
   max-width: 100%;
