@@ -24,11 +24,9 @@ class UserController extends RESTController {
 		$user = User::findFirstByUsername($username);
 		if ($user && ($user->getPassword()==md5($pwd))) {
 
-			if (strtotime($user->getExpires()) < strtotime("now")) {
-				$user->setExpires(date("Y-m-d H:i:s", strtotime("+5 minutes")));
-				$user->setPrivateKey(md5(time().$user->getName()."lp"));
-				$user->save();
-			}
+			$user->setExpires(date("Y-m-d H:i:s", strtotime("+5 minutes")));
+			$user->setPrivateKey(md5(time().$user->getName()."lp"));
+			$user->save();
 
 			$this->session->set("user", $user);
 			return array(
