@@ -3,9 +3,6 @@
   angular.module('metaEditor').controller('LoginCtrl', [
     '$scope', 'AuthService', '$rootScope', 'AuthEvents', '$window', '$location', function($scope, AuthService, $rootScope, AuthEvents, $window, $location) {
       $scope.user = {};
-      if (!AuthService.isGuest()) {
-        $location.path("/sc");
-      }
       return $scope.login = function(theForm) {
         if (!theForm.$invalid) {
           return AuthService.login($scope.user.username, $scope.user.password).then(function(user) {

@@ -156,6 +156,7 @@
           });
         },
         isGuest: function() {
+          console.log(AuthToken.get());
           return AuthToken.get() === null;
         },
         currentUser: function() {

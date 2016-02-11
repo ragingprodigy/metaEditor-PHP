@@ -12,12 +12,15 @@ angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStra
     guestView: true
     controller: 'LoginCtrl'
   .when '/:court',
+    guestView: false
     templateUrl: 'views/legal-heads.html'
     controller: 'LegalHeadsCtrl'
   .when '/:court/:legal_head',
+    guestView: false
     templateUrl: 'views/subject-matters.html'
     controller: 'LegalHeadCtrl'
   .when '/:court/:legal_head/:subject',
+    guestView: false
     templateUrl: 'views/issues.html'
     controller: 'IssuesCtrl'
   .otherwise
@@ -29,6 +32,7 @@ angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStra
     toLogin()
 
   $rootScope.$on AuthEvents.sessionTimeout, ->
+    alert AuthEvents.sessionTimeout
     toLogin "Your Session has timed out"
 
   $rootScope.$on AuthEvents.loginFailed, ->

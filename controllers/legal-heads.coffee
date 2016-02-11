@@ -4,8 +4,9 @@ angular.module 'metaEditor'
 
   $scope.user = {}
 
-  if not AuthService.isGuest()
-    $location.path "/sc"
+#  if not AuthService.isGuest()
+#    alert "User isn't a guest. Go to Login"
+#    $location.path "/sc"
 
   $scope.login = (theForm) ->
     if not theForm.$invalid

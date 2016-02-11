@@ -106,6 +106,7 @@ angular.module 'metaEditor'
       response.data.records.user
 
   isGuest: ->
+    console.log AuthToken.get()
     AuthToken.get() is null
 
   currentUser: ->
