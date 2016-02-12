@@ -70,7 +70,7 @@ class AppController extends RESTController {
 		if (isset($post->subject_matter)) {
 			$response = $this->getDi()->getShared('db')->query("insert ignore into subject_matters (legalhead, subjectmatter) values (:lh , :sm)", array("lh"=>$post->lh, "sm"=>$post->sm))->execute();
 
-			$this->writeLog("setSMAsStandard", 1, "Set the Subject Matter {$post->sm} in {$post->lh} AS a STANDARD");
+			$this->writeLog("setSubjectMatterAsStandard", 1, "Set the Subject Matter {$post->sm} in {$post->lh} AS a STANDARD");
 		} else if (isset($post->issue)) {
 			$response = $this->getDi()->getShared('db')->query("insert ignore into standard_issues (legalhead, subjectmatter, issue) values (:lh, :sm, :iss)", array("lh"=>$post->lh, "sm"=>$post->sm, "iss"=>$post->iss))->execute();
 
