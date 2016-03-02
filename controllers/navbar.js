@@ -4,7 +4,7 @@
     '$scope', '$location', 'LP', 'AuthService', function($scope, $location, LP, AuthService) {
       $scope.m = LP;
       $scope.showBack = function() {
-        return $location.path() !== '/';
+        return $location.path() !== '/' && $location.path() !== '/reports-view';
       };
       $scope.logout = function() {
         if (confirm("Are you sure?")) {

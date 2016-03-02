@@ -1,0 +1,29 @@
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h4 class="pull-left">Staff:
+                <select ng-model="activeStaff" ng-change="getData()">
+                    <option ng-repeat="s in staff" value="{{s.id}}">{{s.name}}</option>
+                </select>
+            </h4>
+            <h4 class="pull-right">
+                Reports for:
+                <select ng-model="activePeriod" ng-change="getData()">
+                    <option ng-repeat="p in periods" value="{{p.value}}">{{p.label}}</option>
+                </select>
+            </h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4" ng-repeat="metric in summary">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center"> {{wiki[metric.action]}} </div>
+                <div class="panel-body" style="cursor: pointer;" ng-click="showDetail(metric.action)">
+                    <h1 class="text-center">{{metric.ct}}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

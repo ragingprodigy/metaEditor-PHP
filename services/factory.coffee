@@ -8,8 +8,38 @@ angular.module 'metaEditor'
   nic: 'National Industrial Court'
   uk: 'United Kingdom'
 
+.constant 'CONST',
+  changeLegalHead: "Change Legal Head"
+  detachRatio: "Detach Ratio"
+  mergeIssues: "Merge Issues"
+  mergeSubjectMatters: "Merge Subject Matters"
+  changeSubjectMatter: "Change Subject Matter"
+  changeLegalHead: "Change Legal Head"
+  updateIssue: "Update Issue"
+  updateSubjectMatter: "Update Subject Matter"
+  setIssueAsStandard: "Set Issue as Standard"
+  setSubjectMatterAsStandard: "Set Subject Matter as Standard"
+
 .factory 'AppServe', ['$resource', ($resource)->
   $resource 'api/v1/legalHeads/:_id?envelope=false'
+]
+
+.factory 'Report', ['$resource', ($resource) ->
+  baseUrl = 'api/v1/reports/'
+
+  $resource baseUrl, null,
+    summary:
+      method: "GET"
+      isArray: true
+      url: baseUrl + "summary"
+    details:
+      method: "GET"
+      isArray: true
+      url: baseUrl + "details"
+    staff:
+      method: "GET"
+      isArray: true
+      url: baseUrl + "staff"
 ]
 
 .factory 'MergeService', ['$http', ($http)->
@@ -106,7 +136,6 @@ angular.module 'metaEditor'
       response.data.records.user
 
   isGuest: ->
-    console.log AuthToken.get()
     AuthToken.get() is null
 
   currentUser: ->
@@ -117,13 +146,16 @@ angular.module 'metaEditor'
     AuthToken.clear()
 ]
 
-.factory "AuthInterceptor", ['$q', '$injector', ($q, $injector) ->
+.factory "AuthInterceptor", ['$q', '$injector', 'uiBlock', ($q, $injector, uiBlock) ->
   #This will be called on every outgoing http request
   request: (config)->
     AuthToken = $injector.get("AuthToken")
     token = AuthToken.get()
     config.headers = config?.headers || {}
     if token? and config.url.match(new RegExp('api/v1/')) then config.headers.X_API_KEY = token
+
+    # block UI
+    if config.url.match(new RegExp 'api/v1/report') then uiBlock.block()
 
     config || $q.when(config)
 
@@ -132,6 +164,7 @@ angular.module 'metaEditor'
 
   response: (response) ->
     #Unblock the UI
+    uiBlock.clear()
     response
 
   # This will be called on every incoming response that has en error status code

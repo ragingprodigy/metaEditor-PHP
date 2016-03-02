@@ -3,14 +3,89 @@
   angular.module('metaEditor').controller('LoginCtrl', [
     '$scope', 'AuthService', '$rootScope', 'AuthEvents', '$window', '$location', function($scope, AuthService, $rootScope, AuthEvents, $window, $location) {
       $scope.user = {};
+      if (!AuthService.isGuest()) {
+        $location.path("/sc");
+      }
       return $scope.login = function(theForm) {
         if (!theForm.$invalid) {
-          return AuthService.login($scope.user.username, $scope.user.password).then(function(user) {
+          return AuthService.login($scope.user.username, $scope.user.password).then(function() {
             return $location.path("/sc");
           }, function() {
             return $rootScope.$broadcast(AuthEvents.loginFailed);
           });
         }
+      };
+    }
+  ]).controller('ReportCtrl', [
+    '$scope', 'Report', 'CONST', '$modal', function($scope, Report, CONST, $modal) {
+      $scope.wiki = CONST;
+      $scope.periods = [
+        {
+          value: "day",
+          label: "TODAY"
+        }, {
+          value: "week",
+          label: "THIS WEEK"
+        }, {
+          value: "month",
+          label: "THIS MONTH"
+        }, {
+          value: "span",
+          label: "DATE RANGE"
+        }
+      ];
+      $scope.staff = [
+        {
+          id: -1,
+          name: "EVERYONE"
+        }
+      ];
+      $scope.activeStaff = -1;
+      Report.staff({
+        envelope: false
+      }, function(staff) {
+        return $scope.staff = _.union($scope.staff, staff);
+      });
+      $scope.getData = function() {
+        return Report.summary({
+          period: $scope.activePeriod,
+          envelope: false,
+          staff: $scope.activeStaff,
+          from: $scope.from,
+          to: $scope.to
+        }, function(summary) {
+          return $scope.summary = summary;
+        });
+      };
+      $scope.activePeriod = $scope.periods[0].value;
+      $scope.getData();
+      $scope.modal = {
+        "title": "Title",
+        "content": "Hello Modal<br />This is a multiline message!"
+      };
+      return $scope.showDetail = function(action) {
+        $scope.action = action;
+        return Report.details({
+          action: action,
+          period: $scope.activePeriod,
+          envelope: false,
+          staff: $scope.activeStaff,
+          from: $scope.from,
+          to: $scope.to
+        }, function(details) {
+          var modal;
+          $scope.reportDetails = details;
+          $scope.user = _.find($scope.staff, function(s) {
+            return s.id === $scope.activeStaff;
+          });
+          modal = $modal({
+            scope: $scope,
+            template: 'views/report-detail.tpl.html',
+            show: false,
+            scope: $scope
+          });
+          return modal.$promise.then(modal.show);
+        });
       };
     }
   ]).controller('LegalHeadsCtrl', [

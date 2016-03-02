@@ -58,6 +58,7 @@ $alert-info-text: #25484e;
 
 body {
   padding-bottom: 20px;
+  height: 100%;
 }
 
 @media (min-width: $screen-lg-min) {
@@ -94,6 +95,15 @@ em {
   margin-bottom: 0;
 }
 
+.modal-dialog {
+  margin: 65px auto;
+}
+
+.modal-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
 .alert.top-right {
   position: fixed;
   top: 50px;
@@ -104,6 +114,26 @@ em {
 
   .close {
     padding-left: 10px
+  }
+}
+
+.modal-backdrop.am-fade {
+  opacity: .9;
+  transition: opacity .15s linear;
+  background: #000;
+  height: 100%;
+  z-index: 10;
+  &.ng-enter {
+    opacity: 0;
+    &.ng-enter-active {
+      opacity: .9;
+    }
+  }
+  &.ng-leave {
+    opacity: .9;
+    &.ng-leave-active {
+      opacity: 0;
+    }
   }
 }
 

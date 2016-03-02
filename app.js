@@ -2,25 +2,36 @@
 (function() {
   angular.module('metaEditor', ['ngResource', 'ngMessages', 'ngRoute', 'mgcrea.ngStrap', 'ui.bootstrap']).config([
     '$locationProvider', '$routeProvider', '$httpProvider', function($locationProvider, $routeProvider, $httpProvider) {
+      var baseUrl;
+      $locationProvider.html5Mode(true);
       $httpProvider.interceptors.push("AuthInterceptor");
-      return $routeProvider.when('/', {
+      if (window.location.hostname.indexOf(".dev") > -1) {
+        baseUrl = "";
+      } else {
+        baseUrl = "/meta-editor";
+      }
+      return $routeProvider.when(baseUrl + '/', {
         templateUrl: 'views/login.html',
         guestView: true,
         controller: 'LoginCtrl'
-      }).when('/:court', {
+      }).when(baseUrl + '/reports-view', {
+        templateUrl: 'views/reports.html',
+        guestView: true,
+        controller: 'ReportCtrl'
+      }).when(baseUrl + '/:court', {
         guestView: false,
         templateUrl: 'views/legal-heads.html',
         controller: 'LegalHeadsCtrl'
-      }).when('/:court/:legal_head', {
+      }).when(baseUrl + '/:court/:legal_head', {
         guestView: false,
         templateUrl: 'views/subject-matters.html',
         controller: 'LegalHeadCtrl'
-      }).when('/:court/:legal_head/:subject', {
+      }).when(baseUrl + '/:court/:legal_head/:subject', {
         guestView: false,
         templateUrl: 'views/issues.html',
         controller: 'IssuesCtrl'
       }).otherwise({
-        redirectTo: '/sc'
+        redirectTo: baseUrl + '/sc'
       });
     }
   ]).run([

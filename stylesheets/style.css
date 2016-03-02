@@ -5458,7 +5458,8 @@ button.close {
   .hidden-print {
     display: none !important; } }
 body {
-  padding-bottom: 20px; }
+  padding-bottom: 20px;
+  height: 100%; }
 
 @media (min-width: 1200px) {
   .container {
@@ -5485,6 +5486,13 @@ em {
 .pagination {
   margin-bottom: 0; }
 
+.modal-dialog {
+  margin: 65px auto; }
+
+.modal-body {
+  max-height: 500px;
+  overflow-y: auto; }
+
 .alert.top-right {
   position: fixed;
   top: 50px;
@@ -5494,6 +5502,21 @@ em {
   outline: none; }
   .alert.top-right .close {
     padding-left: 10px; }
+
+.modal-backdrop.am-fade {
+  opacity: .9;
+  transition: opacity .15s linear;
+  background: #000;
+  height: 100%;
+  z-index: 10; }
+  .modal-backdrop.am-fade.ng-enter {
+    opacity: 0; }
+    .modal-backdrop.am-fade.ng-enter.ng-enter-active {
+      opacity: .9; }
+  .modal-backdrop.am-fade.ng-leave {
+    opacity: .5; }
+    .modal-backdrop.am-fade.ng-leave.ng-leave-active {
+      opacity: 0; }
 
 .btn, .floating-button, .back-button {
   border-radius: 2px; }
@@ -5679,7 +5702,16 @@ table#lH-table tr.highlight td button.c-btn, table#lH-table tr:hover td button.c
 .aside .aside-dialog .aside-body {
   padding: 100px 15px 15px !important; }
 
-.m-r-10
+.m-r-10 {
+  margin-right: 10px; }
+
+/**
+ * angular-strap
+ * @version v2.0.5 - 2014-08-07
+ * @link http://mgcrea.github.io/angular-strap
+ * @author Olivier Louvignes (olivier@mg-crea.com)
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
 .carousel-inner > .item > a > img, .carousel-inner > .item > img, .thumbnail a > img, .thumbnail > img {
   display: block;
   max-width: 100%;

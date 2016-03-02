@@ -7,9 +7,42 @@
     tat: 'Tax Appeal Tribunal',
     nic: 'National Industrial Court',
     uk: 'United Kingdom'
+  }).constant('CONST', {
+    changeLegalHead: "Change Legal Head",
+    detachRatio: "Detach Ratio",
+    mergeIssues: "Merge Issues",
+    mergeSubjectMatters: "Merge Subject Matters",
+    changeSubjectMatter: "Change Subject Matter",
+    changeLegalHead: "Change Legal Head",
+    updateIssue: "Update Issue",
+    updateSubjectMatter: "Update Subject Matter",
+    setIssueAsStandard: "Set Issue as Standard",
+    setSubjectMatterAsStandard: "Set Subject Matter as Standard"
   }).factory('AppServe', [
     '$resource', function($resource) {
       return $resource('api/v1/legalHeads/:_id?envelope=false');
+    }
+  ]).factory('Report', [
+    '$resource', function($resource) {
+      var baseUrl;
+      baseUrl = 'api/v1/reports/';
+      return $resource(baseUrl, null, {
+        summary: {
+          method: "GET",
+          isArray: true,
+          url: baseUrl + "summary"
+        },
+        details: {
+          method: "GET",
+          isArray: true,
+          url: baseUrl + "details"
+        },
+        staff: {
+          method: "GET",
+          isArray: true,
+          url: baseUrl + "staff"
+        }
+      });
     }
   ]).factory('MergeService', [
     '$http', function($http) {
@@ -156,7 +189,6 @@
           });
         },
         isGuest: function() {
-          console.log(AuthToken.get());
           return AuthToken.get() === null;
         },
         currentUser: function() {
@@ -169,7 +201,7 @@
       };
     }
   ]).factory("AuthInterceptor", [
-    '$q', '$injector', function($q, $injector) {
+    '$q', '$injector', 'uiBlock', function($q, $injector, uiBlock) {
       return {
         request: function(config) {
           var AuthToken, token;
@@ -179,12 +211,16 @@
           if ((token != null) && config.url.match(new RegExp('api/v1/'))) {
             config.headers.X_API_KEY = token;
           }
+          if (config.url.match(new RegExp('api/v1/report'))) {
+            uiBlock.block();
+          }
           return config || $q.when(config);
         },
         requestError: function(rejectReason) {
           return rejectReason;
         },
         response: function(response) {
+          uiBlock.clear();
           return response;
         },
         responseError: function(response) {

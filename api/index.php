@@ -98,8 +98,9 @@ $app->before(function() use ($app, $di) {
 	switch($app->getRouter()->getRewriteUri()) {
 		case '/v1/users/login/':
 		case '/v1/users/register/':
-			return true;
-			break;
+		case '/v1/reports/summary':
+		case '/v1/reports/staff':
+		case '/v1/reports/details':
 		case '/example/route':
 			return true;
 			break;

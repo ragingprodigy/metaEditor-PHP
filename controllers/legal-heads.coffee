@@ -4,16 +4,76 @@ angular.module 'metaEditor'
 
   $scope.user = {}
 
-#  if not AuthService.isGuest()
-#    alert "User isn't a guest. Go to Login"
-#    $location.path "/sc"
+  if not AuthService.isGuest()
+    $location.path "/sc"
 
   $scope.login = (theForm) ->
     if not theForm.$invalid
-      AuthService.login($scope.user.username, $scope.user.password).then (user)->
+      AuthService.login($scope.user.username, $scope.user.password).then ->
         $location.path "/sc"
       , ->
         $rootScope.$broadcast(AuthEvents.loginFailed)
+]
+
+.controller 'ReportCtrl', ['$scope', 'Report', 'CONST', '$modal', ($scope, Report, CONST, $modal) ->
+  $scope.wiki = CONST
+
+  $scope.periods = [
+    { value: "day", label: "TODAY" }
+    { value: "week", label: "THIS WEEK" }
+    { value: "month", label: "THIS MONTH" }
+    { value: "span", label: "DATE RANGE" }
+  ]
+
+  $scope.staff = [
+    { id: -1, name: "EVERYONE" }
+  ]
+
+  $scope.activeStaff = -1
+
+  Report.staff envelope: false, (staff) ->
+    $scope.staff = _.union $scope.staff, staff
+
+  $scope.getData = ->
+    Report.summary
+      period: $scope.activePeriod
+      envelope: false
+      staff: $scope.activeStaff
+      from: $scope.from
+      to: $scope.to
+    , (summary) ->
+      $scope.summary = summary
+
+  $scope.activePeriod = $scope.periods[0].value
+  $scope.getData()
+
+  $scope.modal = {
+    "title": "Title",
+    "content": "Hello Modal<br />This is a multiline message!"
+  };
+
+  $scope.showDetail = (action) ->
+    $scope.action = action
+    Report.details
+      action: action
+      period: $scope.activePeriod
+      envelope: false
+      staff: $scope.activeStaff
+      from: $scope.from
+      to: $scope.to
+    , (details) ->
+      $scope.reportDetails = details
+      $scope.user = _.find $scope.staff, (s) ->
+        s.id is $scope.activeStaff
+
+      modal = $modal
+        scope: $scope
+        template: 'views/report-detail.tpl.html'
+        show: false
+        scope: $scope
+
+      modal.$promise.then modal.show
+
 ]
 
 .controller 'LegalHeadsCtrl', ['$scope', '$routeParams', 'LP', 'AppServe', '$location', '$alert', ($scope, $routeParams, LP, AppServe, $location, $alert )->

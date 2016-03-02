@@ -1,0 +1,35 @@
+<div class="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="$hide()">×</button>
+                <h4 class="modal-title">{{user.name}} <small>{{wiki[action]}}</small></h4>
+            </div>
+
+            <div class="modal-body no-padding">
+                <table class="table table-hover table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th class="text-center" style="width: 60px;">S/N.</th>
+                        <th class="text-center" style="width: 145px;">Date</th>
+                        <th>Description</th>
+                        <th style="width: 60px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="d in reportDetails">
+                        <td class="text-right">{{$index+1}}.</td>
+                        <td class="text-center">{{d.created}}</td>
+                        <td>{{d.meta}}</td>
+                        <td class="text-center">{{d.items}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" ng-click="$hide()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

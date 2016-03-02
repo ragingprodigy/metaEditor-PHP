@@ -3,7 +3,7 @@ angular.module 'metaEditor'
   $scope.m = LP
 
   $scope.showBack = ->
-    $location.path() isnt '/'
+    $location.path() isnt '/' && $location.path() isnt '/reports-view'
 
   $scope.logout = ->
     if confirm "Are you sure?"

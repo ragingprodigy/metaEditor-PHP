@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="metaEditor">
+<html ng-app="metaEditor" style="height: 100%;">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,8 +7,9 @@
     <title>LawPavilion metaEditor</title>
     <!--<link rel="icon" type="image/png" href="favicon.png"/>-->
     <link href="stylesheets/style.css" rel="stylesheet">
+    <base href="/">
 </head>
-<body>
+<body class="body">
 <div ng-controller="NavbarCtrl" class="navbar navbar-default navbar-static-top" role="navigation" bs-navbar>
     <div class="navbar-header">
         <a class="navbar-brand" href="/">
@@ -25,8 +26,9 @@
         <li data-match-route="/uk"><a href="uk" ng-bind="m.uk"></a></li>
     </ul>
 
-    <ul class="nav navbar-nav pull-right" ng-hide="isGuest()">
-        <li><a ng-click="logout()">LOGOUT</a></li>
+    <ul class="nav navbar-nav pull-right">
+        <li><a href="/#/reports-view">Dashboard</a></li>
+        <li ng-hide="isGuest()"><a ng-click="logout()">LOGOUT</a></li>
     </ul>
 
     <back-button ng-show="showBack()"></back-button>
@@ -34,6 +36,7 @@
 
 <div ng-view></div>
 
+<script src="vendor/jquery.min.js"></script>
 <script src="vendor/angular.js"></script>
 <script src="vendor/angular-strap.js"></script>
 <script src="vendor/angular-strap.tpl.js"></script>
@@ -42,11 +45,13 @@
 <script src="vendor/angular-route.js"></script>
 <script src="vendor/underscore-min.js"></script>
 <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="vendor/jquery.blockUI.js"></script>
 
 <script src="app.js"></script>
 <script src="controllers/navbar.js"></script>
 <script src="controllers/legal-heads.js"></script>
 <script src="directives/floating-buttons.js"></script>
+<script src="services/ui_block.service.js"></script>
 <script src="services/factory.js"></script>
 
 </body>
