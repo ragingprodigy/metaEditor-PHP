@@ -2,11 +2,12 @@
 angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStrap','ui.bootstrap']
 
 .config ['$locationProvider','$routeProvider', '$httpProvider', ($locationProvider, $routeProvider, $httpProvider) ->
-  $locationProvider.html5Mode true
+#  $locationProvider.html5Mode true
 
   $httpProvider.interceptors.push "AuthInterceptor"
 
-  if window.location.hostname.indexOf(".dev") > -1 then baseUrl = "" else baseUrl = "/meta-editor"
+#  if window.location.hostname.indexOf(".dev") > -1 then baseUrl = "" else baseUrl = "/meta-editor"
+  baseUrl = ""
 
   $routeProvider
   .when baseUrl + '/',

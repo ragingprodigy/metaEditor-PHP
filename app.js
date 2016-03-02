@@ -3,13 +3,8 @@
   angular.module('metaEditor', ['ngResource', 'ngMessages', 'ngRoute', 'mgcrea.ngStrap', 'ui.bootstrap']).config([
     '$locationProvider', '$routeProvider', '$httpProvider', function($locationProvider, $routeProvider, $httpProvider) {
       var baseUrl;
-      $locationProvider.html5Mode(true);
       $httpProvider.interceptors.push("AuthInterceptor");
-      if (window.location.hostname.indexOf(".dev") > -1) {
-        baseUrl = "";
-      } else {
-        baseUrl = "/meta-editor";
-      }
+      baseUrl = "";
       return $routeProvider.when(baseUrl + '/', {
         templateUrl: 'views/login.html',
         guestView: true,
