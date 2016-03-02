@@ -1,12 +1,29 @@
 <div class="container">
 
     <div class="panel panel-default">
-        <div class="panel-body">
+        <div class="panel-body text-center">
             <h4 class="pull-left">Staff:
                 <select ng-model="activeStaff" ng-change="getData()">
                     <option ng-repeat="s in staff" value="{{s.id}}">{{s.name}}</option>
                 </select>
             </h4>
+            <div ng-show="activePeriod=='span'" class="col-md-7">
+                <form class="form form-inline" name="fForm">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="selection"> Use Date Range
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" class="form-control" placeholder="From" ng-model="from" required>
+                    </div>
+                    <div class="form-group" ng-show="selection">
+                        <input type="date" class="form-control" placeholder="To" ng-model="to">
+                    </div>
+                    <button ng-click="getData()" class="btn btn-primary"><i class="glyphicon glyphicon-filter"></i>
+                        Filter</button>
+                </form>
+            </div>
             <h4 class="pull-right">
                 Reports for:
                 <select ng-model="activePeriod" ng-change="getData()">

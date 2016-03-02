@@ -35,22 +35,20 @@ angular.module 'metaEditor'
     $scope.staff = _.union $scope.staff, staff
 
   $scope.getData = ->
-    Report.summary
-      period: $scope.activePeriod
-      envelope: false
-      staff: $scope.activeStaff
-      from: $scope.from
-      to: $scope.to
-    , (summary) ->
-      $scope.summary = summary
+    if $scope.activePeriod is 'span' and not $scope.from
+
+    else
+      Report.summary
+        period: $scope.activePeriod
+        envelope: false
+        staff: $scope.activeStaff
+        from: $scope.from
+        to: $scope.to
+      , (summary) ->
+        $scope.summary = summary
 
   $scope.activePeriod = $scope.periods[0].value
   $scope.getData()
-
-  $scope.modal = {
-    "title": "Title",
-    "content": "Hello Modal<br />This is a multiline message!"
-  };
 
   $scope.showDetail = (action) ->
     $scope.action = action

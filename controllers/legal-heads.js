@@ -47,22 +47,22 @@
         return $scope.staff = _.union($scope.staff, staff);
       });
       $scope.getData = function() {
-        return Report.summary({
-          period: $scope.activePeriod,
-          envelope: false,
-          staff: $scope.activeStaff,
-          from: $scope.from,
-          to: $scope.to
-        }, function(summary) {
-          return $scope.summary = summary;
-        });
+        if ($scope.activePeriod === 'span' && !$scope.from) {
+
+        } else {
+          return Report.summary({
+            period: $scope.activePeriod,
+            envelope: false,
+            staff: $scope.activeStaff,
+            from: $scope.from,
+            to: $scope.to
+          }, function(summary) {
+            return $scope.summary = summary;
+          });
+        }
       };
       $scope.activePeriod = $scope.periods[0].value;
       $scope.getData();
-      $scope.modal = {
-        "title": "Title",
-        "content": "Hello Modal<br />This is a multiline message!"
-      };
       return $scope.showDetail = function(action) {
         $scope.action = action;
         return Report.details({
