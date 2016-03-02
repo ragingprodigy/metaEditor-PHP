@@ -2,31 +2,29 @@
 (function() {
   angular.module('metaEditor', ['ngResource', 'ngMessages', 'ngRoute', 'mgcrea.ngStrap', 'ui.bootstrap']).config([
     '$locationProvider', '$routeProvider', '$httpProvider', function($locationProvider, $routeProvider, $httpProvider) {
-      var baseUrl;
       $httpProvider.interceptors.push("AuthInterceptor");
-      baseUrl = "";
-      return $routeProvider.when(baseUrl + '/', {
+      return $routeProvider.when('/', {
         templateUrl: 'views/login.html',
         guestView: true,
         controller: 'LoginCtrl'
-      }).when(baseUrl + '/reports-view', {
+      }).when('/reports-view', {
         templateUrl: 'views/reports.html',
         guestView: true,
         controller: 'ReportCtrl'
-      }).when(baseUrl + '/:court', {
+      }).when('/:court', {
         guestView: false,
         templateUrl: 'views/legal-heads.html',
         controller: 'LegalHeadsCtrl'
-      }).when(baseUrl + '/:court/:legal_head', {
+      }).when('/:court/:legal_head', {
         guestView: false,
         templateUrl: 'views/subject-matters.html',
         controller: 'LegalHeadCtrl'
-      }).when(baseUrl + '/:court/:legal_head/:subject', {
+      }).when('/:court/:legal_head/:subject', {
         guestView: false,
         templateUrl: 'views/issues.html',
         controller: 'IssuesCtrl'
       }).otherwise({
-        redirectTo: baseUrl + '/sc'
+        redirectTo: '/sc'
       });
     }
   ]).run([

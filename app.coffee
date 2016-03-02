@@ -7,31 +7,30 @@ angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStra
   $httpProvider.interceptors.push "AuthInterceptor"
 
 #  if window.location.hostname.indexOf(".dev") > -1 then baseUrl = "" else baseUrl = "/meta-editor"
-  baseUrl = ""
 
   $routeProvider
-  .when baseUrl + '/',
+  .when '/',
     templateUrl: 'views/login.html'
     guestView: true
     controller: 'LoginCtrl'
-  .when baseUrl + '/reports-view',
+  .when '/reports-view',
     templateUrl: 'views/reports.html'
     guestView: true
     controller: 'ReportCtrl'
-  .when baseUrl + '/:court',
+  .when '/:court',
     guestView: false
     templateUrl: 'views/legal-heads.html'
     controller: 'LegalHeadsCtrl'
-  .when baseUrl + '/:court/:legal_head',
+  .when '/:court/:legal_head',
     guestView: false
     templateUrl: 'views/subject-matters.html'
     controller: 'LegalHeadCtrl'
-  .when baseUrl + '/:court/:legal_head/:subject',
+  .when '/:court/:legal_head/:subject',
     guestView: false
     templateUrl: 'views/issues.html'
     controller: 'IssuesCtrl'
   .otherwise
-    redirectTo: baseUrl + '/sc'
+    redirectTo: '/sc'
 ]
 
 .run ['$rootScope', 'AuthEvents', 'AuthService', 'AppConstants', '$location', ($rootScope, AuthEvents, AuthService, AppConstants, $location) ->
