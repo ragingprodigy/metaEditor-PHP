@@ -34,8 +34,7 @@
         return toLogin();
       });
       $rootScope.$on(AuthEvents.sessionTimeout, function() {
-        alert(AuthEvents.sessionTimeout);
-        return toLogin("Your Session has timed out");
+        return toLogin();
       });
       $rootScope.$on(AuthEvents.loginFailed, function() {
         return alert("Login Failed");

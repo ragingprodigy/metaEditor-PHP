@@ -38,8 +38,7 @@ angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStra
     toLogin()
 
   $rootScope.$on AuthEvents.sessionTimeout, ->
-    alert AuthEvents.sessionTimeout
-    toLogin "Your Session has timed out"
+    toLogin()
 
   $rootScope.$on AuthEvents.loginFailed, ->
     alert "Login Failed"
