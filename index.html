@@ -18,16 +18,16 @@
     </div>
 
     <ul class="nav navbar-nav" ng-hide="isGuest()">
-        <li data-match-route="/sc"><a href="sc" ng-bind="m.sc"></a></li>
-        <li data-match-route="/ca"><a href="ca" ng-bind="m.ca"></a></li>
-        <li data-match-route="/fhc"><a href="fhc" ng-bind="m.fhc"></a></li>
-        <li data-match-route="/tat"><a href="tat" ng-bind="m.tat"></a></li>
-        <li data-match-route="/nic"><a href="nic" ng-bind="m.nic"></a></li>
-        <li data-match-route="/uk"><a href="uk" ng-bind="m.uk"></a></li>
+        <li data-match-route="/sc"><a href="#/sc" ng-bind="m.sc"></a></li>
+        <li data-match-route="/ca"><a href="#/ca" ng-bind="m.ca"></a></li>
+        <li data-match-route="/fhc"><a href="#/fhc" ng-bind="m.fhc"></a></li>
+        <li data-match-route="/tat"><a href="#/tat" ng-bind="m.tat"></a></li>
+        <li data-match-route="/nic"><a href="#/nic" ng-bind="m.nic"></a></li>
+        <li data-match-route="/uk"><a href="#/uk" ng-bind="m.uk"></a></li>
     </ul>
 
     <ul class="nav navbar-nav pull-right">
-        <li><a href="reports-view">Dashboard</a></li>
+        <li><a href="#/reports-view">Dashboard</a></li>
         <li ng-hide="isGuest()"><a ng-click="logout()">LOGOUT</a></li>
     </ul>
 
