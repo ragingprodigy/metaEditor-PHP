@@ -12,14 +12,14 @@
 <body class="body">
 <div ng-controller="NavbarCtrl" class="navbar navbar-default navbar-static-top" role="navigation" bs-navbar>
     <div class="navbar-header">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand">
             <span class="glyphicon glyphicon-edit"></span>
             LawPavilion <strong>metaEditor</strong></a>
     </div>
 
     <ul class="nav navbar-nav" ng-hide="isGuest()">
-        <li data-match-route="/sc"><a href="#/sc" ng-bind="m.sc"></a></li>
-        <li data-match-route="/ca"><a href="#/ca" ng-bind="m.ca"></a></li>
+        <li data-match-route="/sc"><a ui-sref="legal_head({court: 'sc'})" ng-bind="m.sc"></a></li>
+        <li data-match-route="/ca"><a ui-sref="legal_head({court: 'ca'})" ng-bind="m.ca"></a></li>
         <li data-match-route="/fhc"><a href="#/fhc" ng-bind="m.fhc"></a></li>
         <li data-match-route="/tat"><a href="#/tat" ng-bind="m.tat"></a></li>
         <li data-match-route="/nic"><a href="#/nic" ng-bind="m.nic"></a></li>
@@ -27,22 +27,23 @@
     </ul>
 
     <ul class="nav navbar-nav pull-right">
-        <li><a href="#/reports-view">Dashboard</a></li>
+        <li><a ui-sref="reports">Dashboard</a></li>
         <li ng-hide="isGuest()"><a ng-click="logout()">LOGOUT</a></li>
     </ul>
 
     <back-button ng-show="showBack()"></back-button>
 </div>
 
-<div ng-view></div>
+<div ui-view></div>
 
 <script src="vendor/jquery.min.js"></script>
 <script src="vendor/angular.js"></script>
 <script src="vendor/angular-strap.js"></script>
 <script src="vendor/angular-strap.tpl.js"></script>
 <script src="vendor/angular-messages.js"></script>
+<script src="vendor/angular-ui-router.min.js"></script>
 <script src="vendor/angular-resource.js"></script>
-<script src="vendor/angular-route.js"></script>
+<!--<script src="vendor/angular-route.js"></script>-->
 <script src="vendor/underscore-min.js"></script>
 <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="vendor/jquery.blockUI.js"></script>

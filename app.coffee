@@ -1,39 +1,64 @@
 
-angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStrap','ui.bootstrap']
+angular.module 'metaEditor', ['ngResource','ngMessages', 'ui.router','mgcrea.ngStrap','ui.bootstrap']
 
-.config ['$locationProvider','$routeProvider', '$httpProvider', ($locationProvider, $routeProvider, $httpProvider) ->
+.config ['$urlRouterProvider','$stateProvider', '$httpProvider', ($urlRouterProvider, $stateProvider, $httpProvider) ->
 #  $locationProvider.html5Mode true
 
   $httpProvider.interceptors.push "AuthInterceptor"
 
 #  if window.location.hostname.indexOf(".dev") > -1 then baseUrl = "" else baseUrl = "/meta-editor"
 
-  $routeProvider
-  .when '/',
-    templateUrl: 'views/login.html'
-    guestView: true
-    controller: 'LoginCtrl'
-  .when '/reports-view',
-    templateUrl: 'views/reports.html'
-    guestView: true
-    controller: 'ReportCtrl'
-  .when '/:court',
-    guestView: false
-    templateUrl: 'views/legal-heads.html'
-    controller: 'LegalHeadsCtrl'
-  .when '/:court/:legal_head',
-    guestView: false
-    templateUrl: 'views/subject-matters.html'
-    controller: 'LegalHeadCtrl'
-  .when '/:court/:legal_head/:subject',
-    guestView: false
-    templateUrl: 'views/issues.html'
-    controller: 'IssuesCtrl'
-  .otherwise
-    redirectTo: '/sc'
+#  $routeProvider
+#  .when '/',
+#    templateUrl: 'views/login.html'
+#    guestView: true
+#    controller: 'LoginCtrl'
+#  .when '/reports-view',
+#    templateUrl: 'views/reports.html'
+#    guestView: true
+#    controller: 'ReportCtrl'
+#  .when '/:court',
+#    guestView: false
+#    templateUrl: 'views/legal-heads.html'
+#    controller: 'LegalHeadsCtrl'
+#  .when '/:court/:legal_head',
+#    guestView: false
+#    templateUrl: 'views/subject-matters.html'
+#    controller: 'LegalHeadCtrl'
+#  .when '/:court/:legal_head/:subject',
+#    guestView: false
+#    templateUrl: 'views/issues.html'
+#    controller: 'IssuesCtrl'
+#  .otherwise
+#    redirectTo: '/sc'
+
+  $urlRouterProvider.otherwise '/'
+
+  $stateProvider
+    .state 'login',
+      url: '/'
+      templateUrl: 'views/login.html'
+      guestView: true
+      controller: 'LoginCtrl'
+    .state 'reports',
+      url: "/reports-view"
+      templateUrl: 'views/reports.html'
+      controller: 'ReportCtrl'
+    .state 'legal_head',
+      url: "/legalHeads/:court"
+      templateUrl: 'views/legal-heads.html'
+      controller: 'LegalHeadsCtrl'
+    .state 'subject_matter',
+      url: "/legalHeads/:court/:legal_head"
+      templateUrl: 'views/subject-matters.html'
+      controller: 'LegalHeadCtrl'
+    .state 'issue',
+      url: "/legalHeads/:court/:legal_head/:subject"
+      templateUrl: 'views/issues.html'
+      controller: 'IssuesCtrl'
 ]
 
-.run ['$rootScope', 'AuthEvents', 'AuthService', 'AppConstants', '$location', ($rootScope, AuthEvents, AuthService, AppConstants, $location) ->
+.run ['$rootScope', 'AuthEvents', 'AuthService', 'AppConstants', '$location', '$state', ($rootScope, AuthEvents, AuthService, AppConstants, $location, $state) ->
   $rootScope.$on AuthEvents.notAuthenticated, ->
     toLogin()
 
@@ -43,12 +68,12 @@ angular.module 'metaEditor', ['ngResource','ngMessages','ngRoute','mgcrea.ngStra
   $rootScope.$on AuthEvents.loginFailed, ->
     alert "Login Failed"
 
-  $rootScope.$on '$routeChangeStart', (event, next) ->
+  $rootScope.$on '$stateChangeStart', (event, next) ->
     if AuthService.isGuest() and not next.guestView
       $rootScope.$broadcast AuthEvents.notAuthenticated
 
   toLogin = ->
-    $location.path "/"
+    $state.go "login"
 ]
 
 .constant "CONF",

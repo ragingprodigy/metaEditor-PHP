@@ -1,16 +1,19 @@
 angular.module 'metaEditor'
 
-.controller 'LoginCtrl', ['$scope', 'AuthService', '$rootScope', 'AuthEvents', '$window', '$location', ($scope, AuthService, $rootScope, AuthEvents, $window, $location) ->
+.controller 'LoginCtrl', ['$scope', 'AuthService', '$rootScope', 'AuthEvents', '$window', '$state', ($scope, AuthService, $rootScope, AuthEvents, $window, $state) ->
 
   $scope.user = {}
 
+  toSc = ->
+    $state.go "legal_head", court: "sc"
+
   if not AuthService.isGuest()
-    $location.path "/sc"
+    toSc()
 
   $scope.login = (theForm) ->
     if not theForm.$invalid
       AuthService.login($scope.user.username, $scope.user.password).then ->
-        $location.path "/sc"
+        toSc()
       , ->
         $rootScope.$broadcast(AuthEvents.loginFailed)
 ]
@@ -74,12 +77,13 @@ angular.module 'metaEditor'
 
 ]
 
-.controller 'LegalHeadsCtrl', ['$scope', '$routeParams', 'LP', 'AppServe', '$location', '$alert', ($scope, $routeParams, LP, AppServe, $location, $alert )->
-  $scope.title = LP[$routeParams.court]
+.controller 'LegalHeadsCtrl', ['$scope', '$stateParams', 'LP', 'AppServe', '$state', '$alert', ($scope, $stateParams, LP, AppServe, $state, $alert )->
+  
+  $scope.title = LP[$stateParams.court]
   $scope.rowActive = false
 
   $scope.getLegalHeads = ->
-    AppServe.query { getHeads: true, court: $routeParams.court }, (response) ->
+    AppServe.query { getHeads: true, court: $stateParams.court }, (response) ->
       $scope.legalHeads = response
 
     AppServe.query { getStandard: true }, (response) ->
@@ -97,7 +101,7 @@ angular.module 'metaEditor'
     if $scope.activeRow isnt undefined
       old = $scope.legalHeads[$scope.activeRow].legalHead
       if confirm "Replace #{$scope.legalHeads[$scope.activeRow].legalHead} with #{lh}?"
-        AppServe.query { doReplace: true, old: old, new: lh, court: $routeParams.court }
+        AppServe.query { doReplace: true, old: old, new: lh, court: $stateParams.court }
         .$promise.then ->
           $alert {
             title: 'Info:'
@@ -110,14 +114,16 @@ angular.module 'metaEditor'
           $scope.getLegalHeads()
 
   $scope.showSubjectMatter = (l) ->
-    $location.path $routeParams.court+"/"+l.hexEncode()
+    $state.go "subject_matter",
+      court: $stateParams.court
+      legal_head: l.hexEncode()
 
   $scope.getLegalHeads()
 ]
 
-.controller 'LegalHeadCtrl', ['$scope', '$routeParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$location', '$alert', 'CONF', ($scope, $routeParams, LP, AppServe, filterFilter, MergeService, $location, $alert, CONF) ->
-  $scope.legal_head = $routeParams.legal_head.hexDecode()
-  $scope.title = $scope.legal_head + " - " + LP[$routeParams.court]
+.controller 'LegalHeadCtrl', ['$scope', '$stateParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$state', '$alert', ($scope, $stateParams, LP, AppServe, filterFilter, MergeService, $state, $alert) ->
+  $scope.legal_head = $stateParams.legal_head.hexDecode()
+  $scope.title = $scope.legal_head + " - " + LP[$stateParams.court]
   $scope.mergeSet = []
 
   $scope.popover = {}
@@ -129,7 +135,7 @@ angular.module 'metaEditor'
   $scope.changeLH = (newLh, selectedSM) ->
     selectedSubjectMatter = "#{selectedSM}"
     if confirm "Change the Legal Head for #{selectedSM} from #{$scope.legal_head} to #{newLh}"
-      MergeService.changeLegalHead selectedSubjectMatter, $scope.legal_head, newLh, $routeParams.court
+      MergeService.changeLegalHead selectedSubjectMatter, $scope.legal_head, newLh, $stateParams.court
       .then (r) ->
         if r.data.length is 3
           $alert
@@ -143,7 +149,7 @@ angular.module 'metaEditor'
 
   $scope.updateContent = (newSubjectMatter)->
     if $scope.currentSm isnt undefined and confirm "Change #{$scope.currentSm} to #{newSubjectMatter}?"
-      MergeService.updateSubjectMatter $scope.currentSm, newSubjectMatter, $routeParams.court, $scope.legal_head
+      MergeService.updateSubjectMatter $scope.currentSm, newSubjectMatter, $stateParams.court, $scope.legal_head
       .then (response) ->
         if response.data.length is 3
           $scope.subjectMatters[$scope.selectedIndex].subjectMatter = newSubjectMatter
@@ -197,9 +203,9 @@ angular.module 'metaEditor'
 
   $scope.doMerge = ->
     theParent = $scope.subjectMatters[$scope.selectedParent].subjectMatter
-    if $scope.mergeSet.length > 0 and confirm "#{$routeParams.court} Do you want to merge\n\n #{$scope.mergeSet.join(', \n')} \n\n into #{theParent}"
+    if $scope.mergeSet.length > 0 and confirm "#{$stateParams.court} Do you want to merge\n\n #{$scope.mergeSet.join(', \n')} \n\n into #{theParent}"
 
-      MergeService.mergeSubjectMatters theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head
+      MergeService.mergeSubjectMatters theParent, $scope.mergeSet, $stateParams.court, $scope.legal_head
       .then (r)->
         if r.data.length is 3
           $alert
@@ -231,7 +237,7 @@ angular.module 'metaEditor'
   $scope.perPage = 2
 
   $scope.getSubjectMatters = ->
-    AppServe.query { getSubjectMatters: true, court: $routeParams.court, legal_head: $scope.legal_head }, (sm) ->
+    AppServe.query { getSubjectMatters: true, court: $stateParams.court, legal_head: $scope.legal_head }, (sm) ->
       $scope.subjectMatters  = sm
 
   $scope.fetchStandard = ->
@@ -239,8 +245,10 @@ angular.module 'metaEditor'
       $scope.standardSubjectMatters = response
 
   $scope.showIssues = (sm) ->
-    curPath = $location.path()
-    $location.path curPath+"/"+sm.hexEncode()
+    $state.go "issue",
+      court: $stateParams.court
+      legal_head: $stateParams.legal_head
+      subject: sm.hexEncode()
 
   $scope.unsetParent()
   $scope.getSubjectMatters()
@@ -251,11 +259,11 @@ angular.module 'metaEditor'
     $scope.getSubjectMatters $scope.currentPage
 ]
 
-.controller 'IssuesCtrl', ['$scope', '$routeParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$location', '$alert', '$aside', 'CONF', ($scope, $routeParams, LP, AppServe, filterFilter, MergeService, $location, $alert, $aside, CONF) ->
+.controller 'IssuesCtrl', ['$scope', '$stateParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$state', '$alert', '$aside', 'CONF', ($scope, $stateParams, LP, AppServe, filterFilter, MergeService, $state, $alert, $aside, CONF) ->
 
-  $scope.legal_head = $routeParams.legal_head.hexDecode()
-  $scope.subject_matter = $routeParams.subject.hexDecode()
-  $scope.title = $scope.subject_matter + " - " + $scope.legal_head + " - " + LP[$routeParams.court]
+  $scope.legal_head = $stateParams.legal_head.hexDecode()
+  $scope.subject_matter = $stateParams.subject.hexDecode()
+  $scope.title = $scope.subject_matter + " - " + $scope.legal_head + " - " + LP[$stateParams.court]
 
   $scope.mergeSet = []
   $scope.popover = {}
@@ -264,13 +272,13 @@ angular.module 'metaEditor'
 
   $scope.currentIss = $scope.selectedIndex = undefined
 
-  $scope.subjectMatters = AppServe.query { getSubjectMatters: true, court: $routeParams.court, legal_head: $scope.legal_head }
+  $scope.subjectMatters = AppServe.query { getSubjectMatters: true, court: $stateParams.court, legal_head: $scope.legal_head }
 
   $scope.changeSubjectMatter = (newSubjectMatter, selectedIssue) ->
     selectedIssue = "#{selectedIssue}"
     msg = "Change the Subject Matter for \n\n#{selectedIssue} from \n\n#{$scope.subject_matter} to \n\n#{newSubjectMatter}"
     if confirm msg
-      MergeService.changeSM selectedIssue, $scope.subject_matter, newSubjectMatter, $scope.legal_head, $routeParams.court
+      MergeService.changeSM selectedIssue, $scope.subject_matter, newSubjectMatter, $scope.legal_head, $stateParams.court
       .then (r) ->
         if r.data.length is 2
           $alert
@@ -301,7 +309,7 @@ angular.module 'metaEditor'
 
   $scope.updateContent = (newIssue)->
     if $scope.currentIss isnt undefined and confirm "Change #{$scope.currentIss} to #{newIssue}?"
-      MergeService.updateIssue $scope.currentIss, newIssue, $routeParams.court, $scope.legal_head, $scope.subject_matter
+      MergeService.updateIssue $scope.currentIss, newIssue, $stateParams.court, $scope.legal_head, $scope.subject_matter
       .then (response) ->
         if response.data.length is 2
           $scope.issues[$scope.selectedIndex].issue = newIssue
@@ -359,7 +367,7 @@ angular.module 'metaEditor'
     theParent = $scope.issues[$scope.selectedParent].issue
     if $scope.mergeSet.length > 0 and confirm "Do you want to merge\n\n #{$scope.mergeSet.join(', \n')} \n\n into #{theParent}"
 
-      MergeService.mergeIssues theParent, $scope.mergeSet, $routeParams.court, $scope.legal_head, $scope.subject_matter
+      MergeService.mergeIssues theParent, $scope.mergeSet, $stateParams.court, $scope.legal_head, $scope.subject_matter
       .then (r)->
         if r.data.length is 2
           $alert
@@ -374,7 +382,7 @@ angular.module 'metaEditor'
           $scope.fetchStandard()
 
   $scope.getIssues = ->
-    AppServe.query { getIssues: true, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }, (issues, headers) ->
+    AppServe.query { getIssues: true, court: $stateParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }, (issues, headers) ->
       $scope.issues = issues
 
   $scope.unsetParent()
@@ -406,7 +414,7 @@ angular.module 'metaEditor'
     if $scope.issues[index].principles?.length
       showAside()
     else
-      AppServe.query { getPrinciples: true, issue: issue.issue, court: $routeParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }, (principles) ->
+      AppServe.query { getPrinciples: true, issue: issue.issue, court: $stateParams.court, legal_head: $scope.legal_head, subject: $scope.subject_matter }, (principles) ->
 
         $scope.issues[index].principles = principles
         showAside()
@@ -418,7 +426,7 @@ angular.module 'metaEditor'
     $scope.issue.principles[$scope.theIndex].selected = true
     $scope.detachingRatio = true
     $scope.rModel = angular.copy ratio
-    $scope.rModel.court = $routeParams.court
+    $scope.rModel.court = $stateParams.court
 
   $scope.cancelDetach = ->
     $scope.rModel = {}
@@ -429,12 +437,12 @@ angular.module 'metaEditor'
 
   $scope.lhChange = ->
     lh = $scope.rModel.newLegalHead
-    $scope.sSMs = AppServe.query { getSubjectMatters: true, court: $routeParams.court, legal_head: lh }
+    $scope.sSMs = AppServe.query { getSubjectMatters: true, court: $stateParams.court, legal_head: lh }
 
   $scope.smChange = ->
     lh = $scope.rModel.newLegalHead
     sm = $scope.rModel.newSubjectMatter
-    $scope.sIssues = AppServe.query { getIssues: true, court: $routeParams.court, legal_head: lh, subject: sm }
+    $scope.sIssues = AppServe.query { getIssues: true, court: $stateParams.court, legal_head: lh, subject: sm }
 
   $scope.detachRatio = (theForm) ->
     if theForm.$valid and confirm "Are you sure?"

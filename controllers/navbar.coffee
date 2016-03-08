@@ -1,5 +1,5 @@
 angular.module 'metaEditor'
-.controller 'NavbarCtrl', ['$scope', '$location', 'LP', 'AuthService', ($scope, $location, LP, AuthService)->
+.controller 'NavbarCtrl', ['$scope', '$location', 'LP', 'AuthService', '$state', ($scope, $location, LP, AuthService, $state)->
   $scope.m = LP
 
   $scope.showBack = ->
@@ -8,7 +8,8 @@ angular.module 'metaEditor'
   $scope.logout = ->
     if confirm "Are you sure?"
       AuthService.logout()
-      window.location.href = "."
+      $state.go "login"
+#      window.location.href = "."
 
   $scope.isGuest = ->
     AuthService.isGuest()
