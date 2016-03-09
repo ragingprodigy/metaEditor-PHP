@@ -6,8 +6,6 @@ angular.module 'metaEditor', ['ngResource','ngMessages', 'ui.router','mgcrea.ngS
 
   $httpProvider.interceptors.push "AuthInterceptor"
 
-#  if window.location.hostname.indexOf(".dev") > -1 then baseUrl = "" else baseUrl = "/meta-editor"
-
 #  $routeProvider
 #  .when '/',
 #    templateUrl: 'views/login.html'
@@ -42,38 +40,42 @@ angular.module 'metaEditor', ['ngResource','ngMessages', 'ui.router','mgcrea.ngS
       controller: 'LoginCtrl'
     .state 'reports',
       url: "/reports-view"
+      guestView: false
       templateUrl: 'views/reports.html'
       controller: 'ReportCtrl'
     .state 'legal_head',
       url: "/legalHeads/:court"
+      guestView: false
       templateUrl: 'views/legal-heads.html'
       controller: 'LegalHeadsCtrl'
     .state 'subject_matter',
       url: "/legalHeads/:court/:legal_head"
+      guestView: false
       templateUrl: 'views/subject-matters.html'
       controller: 'LegalHeadCtrl'
     .state 'issue',
+      guestView: false
       url: "/legalHeads/:court/:legal_head/:subject"
       templateUrl: 'views/issues.html'
       controller: 'IssuesCtrl'
 ]
 
-.run ['$rootScope', 'AuthEvents', 'AuthService', 'AppConstants', '$location', '$state', ($rootScope, AuthEvents, AuthService, AppConstants, $location, $state) ->
+.run ['$rootScope', 'AuthEvents', 'AuthService', 'AppConstants', '$state', '$window', ($rootScope, AuthEvents, AuthService, AppConstants, $state, $window) ->
   $rootScope.$on AuthEvents.notAuthenticated, ->
     toLogin()
 
   $rootScope.$on AuthEvents.sessionTimeout, ->
+    AuthService.logout()
     toLogin()
 
   $rootScope.$on AuthEvents.loginFailed, ->
     alert "Login Failed"
 
   $rootScope.$on '$stateChangeStart', (event, next) ->
-    if AuthService.isGuest() and not next.guestView
-      $rootScope.$broadcast AuthEvents.notAuthenticated
+    if AuthService.isGuest() and not next.guestView then $window.location.href = '/'
 
   toLogin = ->
-    $state.go "login"
+    $window.location.href = '/'
 ]
 
 .constant "CONF",

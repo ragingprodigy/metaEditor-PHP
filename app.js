@@ -11,29 +11,34 @@
         controller: 'LoginCtrl'
       }).state('reports', {
         url: "/reports-view",
+        guestView: false,
         templateUrl: 'views/reports.html',
         controller: 'ReportCtrl'
       }).state('legal_head', {
         url: "/legalHeads/:court",
+        guestView: false,
         templateUrl: 'views/legal-heads.html',
         controller: 'LegalHeadsCtrl'
       }).state('subject_matter', {
         url: "/legalHeads/:court/:legal_head",
+        guestView: false,
         templateUrl: 'views/subject-matters.html',
         controller: 'LegalHeadCtrl'
       }).state('issue', {
+        guestView: false,
         url: "/legalHeads/:court/:legal_head/:subject",
         templateUrl: 'views/issues.html',
         controller: 'IssuesCtrl'
       });
     }
   ]).run([
-    '$rootScope', 'AuthEvents', 'AuthService', 'AppConstants', '$location', '$state', function($rootScope, AuthEvents, AuthService, AppConstants, $location, $state) {
+    '$rootScope', 'AuthEvents', 'AuthService', 'AppConstants', '$state', '$window', function($rootScope, AuthEvents, AuthService, AppConstants, $state, $window) {
       var toLogin;
       $rootScope.$on(AuthEvents.notAuthenticated, function() {
         return toLogin();
       });
       $rootScope.$on(AuthEvents.sessionTimeout, function() {
+        AuthService.logout();
         return toLogin();
       });
       $rootScope.$on(AuthEvents.loginFailed, function() {
@@ -41,11 +46,11 @@
       });
       $rootScope.$on('$stateChangeStart', function(event, next) {
         if (AuthService.isGuest() && !next.guestView) {
-          return $rootScope.$broadcast(AuthEvents.notAuthenticated);
+          return $window.location.href = '/';
         }
       });
       return toLogin = function() {
-        return $state.go("login");
+        return $window.location.href = '/';
       };
     }
   ]).constant("CONF", {
