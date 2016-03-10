@@ -72,10 +72,10 @@ angular.module 'metaEditor', ['ngResource','ngMessages', 'ui.router','mgcrea.ngS
     alert "Login Failed"
 
   $rootScope.$on '$stateChangeStart', (event, next) ->
-    if AuthService.isGuest() and not next.guestView then $window.location.href = '/'
+    if AuthService.isGuest() and not next.guestView then toLogin()
 
   toLogin = ->
-    $window.location.href = '/'
+    $window.location.href = '.'
 ]
 
 .constant "CONF",

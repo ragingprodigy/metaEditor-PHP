@@ -46,11 +46,11 @@
       });
       $rootScope.$on('$stateChangeStart', function(event, next) {
         if (AuthService.isGuest() && !next.guestView) {
-          return $window.location.href = '/';
+          return toLogin();
         }
       });
       return toLogin = function() {
-        return $window.location.href = '/';
+        return $window.location.href = '.';
       };
     }
   ]).constant("CONF", {
