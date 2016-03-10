@@ -8,6 +8,8 @@
 
 namespace PhalconRest\Controllers;
 use PhalconRest\Models\ActionLog;
+use PhalconRest\Models\CompleteRatio;
+use PhalconRest\Models\Reversal;
 use PhalconRest\Models\User;
 
 
@@ -53,7 +55,8 @@ class AppController extends RESTController {
 		} else if (isset($_GET['getIssues'])) {
 			$response = $this->getDi()->getShared('db')->query("select issues1 as issue, count(*) as places, ( CASE WHEN issues1 IN (SELECT issue from standard_issues WHERE legalhead=:lh AND subjectmatter=:sm ) THEN 1 ELSE 0 END ) as standard from $tableName where `legal head` = :lh and subjectmatter = :sm AND suitno NOT LIKE '%_deleted%' group by `issues1` order by `issues1` ASC;", array("lh"=>$_GET['legal_head'], "sm"=>$_GET['subject']))->fetchAll();
 		} else if (isset($_GET['getPrinciples'])) {
-			$response = $this->getDi()->getShared('db')->query("select * from $tableName where `legal head` = :lh and subjectmatter = :sm and issues1 = :iss AND suitno NOT LIKE '%_deleted%' order by `date` ASC;", array("lh"=>$_GET['legal_head'], "sm"=>$_GET['subject'], "iss"=>$_GET['issue']))->fetchAll();
+
+			$response = $this->getDi()->getShared('db')->query("select `$tableName`.*, id from $tableName LEFT OUTER JOIN complete_ratio ON pk = ratio_id where `legal head` = :lh and subjectmatter = :sm and issues1 = :iss AND suitno NOT LIKE '%_deleted%' order by `date` ASC;", array("lh"=>$_GET['legal_head'], "sm"=>$_GET['subject'], "iss"=>$_GET['issue']))->fetchAll();
 		}
 
 		return $response;
@@ -282,6 +285,7 @@ class AppController extends RESTController {
 	 * @return array
 	 */
 	public function detachRatio() {
+		$headers = apache_request_headers();
 		$post = $this->requestBody;
 		$tableName = "analysis";
 
@@ -290,9 +294,53 @@ class AppController extends RESTController {
 		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName SET `issues1` = :iss, `legal head` = :lh, subjectmatter = :sm, suitno41 = NULL, dt_modified=NOW() WHERE pk = :pk", array("iss"=>$post->newIssue,
 			"lh"=>$post->newLegalHead, "sm"=>$post->newSubjectMatter, "pk"=>$post->pk))->execute();
 
+		// Delete the Last "Completion Record"
+		$this->getDi()->getShared('db')->query("DELETE FROM complete_ratio WHERE ratio_id = :pk", array("pk"=>$post->pk))->execute();
+
+		// Add Deduction Points
+		$userKey = $headers['X_API_KEY'];
+		// Fetch User BY Key
+		$user = User::findFirstByPrivateKey($userKey);
+
+		if ($user) {
+			$reversal = new Reversal();
+			$reversal->setRatioId($post->id)->setUserId($user->getId());
+			$reversal->create();
+
+			if ($reversal->getMessages())
+				error_log(print_r($this->modelError($reversal), true));
+		}
+
+
 		$this->writeLog("detachRatio", 1, "Move Ratio with PK = {$post->pk} to the Following location: {$post->newLegalHead} -> {$post->newSubjectMatter} -> {$post->newIssue}");
 
 		return array($r1);
+	}
+
+	/**
+	 * Detach Ratio
+	 * @return array
+	 */
+	public function markDone() {
+		$headers = apache_request_headers();
+		$userKey = $headers['X_API_KEY'];
+
+		$post = $this->requestBody;
+
+		// Fetch User BY Key
+		$user = User::findFirstByPrivateKey($userKey);
+
+		if ($user) {
+			$cr = new CompleteRatio();
+			$cr->setRatioId($post->id)->setUserId($user->getId());
+
+			$cr->create();
+
+			if ($cr->getMessages())
+				error_log(print_r($this->modelError($cr), true));
+		}
+
+		return array($cr->getId());
 	}
 
 	/**
@@ -316,7 +364,7 @@ class AppController extends RESTController {
 			$al->create();
 
 			if ($al->getMessages())
-				error_log(print_r($this->modelError($al)));
+				error_log(print_r($this->modelError($al), true));
 		}
 	}
 } 

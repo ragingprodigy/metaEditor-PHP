@@ -72,6 +72,9 @@ angular.module 'metaEditor'
     detachRatio: (ratio) ->
       $http.post this.url+'detachRatio?envelope=false', ratio
 
+    markDone: (ratio_id) ->
+      $http.post this.url+'markDone?envelope=false', id: ratio_id
+
     removeStandardSM: (legalHead, subjectMatter) ->
       $http.post this.url+'removeStandard?envelope=false', {
         lh: legalHead

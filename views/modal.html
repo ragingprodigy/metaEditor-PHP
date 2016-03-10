@@ -52,7 +52,11 @@
                         <button type="button" class="btn btn-xs btn-danger" ng-click="doDetach(p, $index)"><i
                                 class="glyphicon glyphicon-edit"></i>
                             Detach Principle</button>
-                        <b>{{p.suitno}}</b><br>
+                        <b>{{p.suitno}}</b><button ng-show="p.id==null" class="btn btn-xs btn-success pull-right"
+                                                   type="button"
+                                                   ng-click="markDone(p, $index)"><i
+                            class="glyphicon glyphicon-ok-sign"></i> Mark Done
+                    </button> <hr style="margin: 10px 0">
                         {{p.principle}}<br>
                     </li>
                 </ul>

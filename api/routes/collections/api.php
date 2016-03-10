@@ -27,6 +27,7 @@ return call_user_func(function(){
 	$api->post('/mergeIssues', 'mergeIssues');
 
 	$api->post('/detachRatio', 'detachRatio');
+	$api->post('/markDone', 'markDone');
 
 	$api->post('/removeStandard', 'removeStandard');
 

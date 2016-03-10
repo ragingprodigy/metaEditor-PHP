@@ -118,6 +118,11 @@
         detachRatio: function(ratio) {
           return $http.post(this.url + 'detachRatio?envelope=false', ratio);
         },
+        markDone: function(ratio_id) {
+          return $http.post(this.url + 'markDone?envelope=false', {
+            id: ratio_id
+          });
+        },
         removeStandardSM: function(legalHead, subjectMatter) {
           return $http.post(this.url + 'removeStandard?envelope=false', {
             lh: legalHead,

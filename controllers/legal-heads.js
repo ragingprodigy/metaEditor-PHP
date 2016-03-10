@@ -310,7 +310,7 @@
       };
     }
   ]).controller('IssuesCtrl', [
-    '$scope', '$stateParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$state', '$alert', '$aside', 'CONF', function($scope, $stateParams, LP, AppServe, filterFilter, MergeService, $state, $alert, $aside, CONF) {
+    '$scope', '$stateParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$state', '$alert', '$aside', '$log', function($scope, $stateParams, LP, AppServe, filterFilter, MergeService, $state, $alert, $aside, $log) {
       $scope.legal_head = $stateParams.legal_head.hexDecode();
       $scope.subject_matter = $stateParams.subject.hexDecode();
       $scope.title = $scope.subject_matter + " - " + $scope.legal_head + " - " + LP[$stateParams.court];
@@ -507,6 +507,11 @@
         $scope.detachingRatio = true;
         $scope.rModel = angular.copy(ratio);
         return $scope.rModel.court = $stateParams.court;
+      };
+      $scope.markDone = function(ratio, $index) {
+        return MergeService.markDone(ratio.pk).then(function(r) {
+          return $scope.issue.principles[$index].id = r;
+        });
       };
       $scope.cancelDetach = function() {
         $scope.rModel = {};

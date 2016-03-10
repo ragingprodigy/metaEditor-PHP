@@ -11,6 +11,7 @@
 
 namespace PhalconRest\Models;
 use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 class CompleteRatio extends Model {
 
@@ -25,8 +26,23 @@ class CompleteRatio extends Model {
 		return $this->id;
 	}
 
+	public function validation()
+	{
+		// Prevent Users from Marking data as complete twice
+		$this->validate(
+			new Uniqueness(
+				array(
+					"field"   => array("ratio_id", "user_id"),
+					"message" => "Ratio already exists"
+				)
+			)
+		);
+
+		return $this->validationHasFailed() != true;
+	}
+
 	/**
-	 * Set ActionLog Table
+	 * Set CompleteRatio Table
 	 *
 	 * @return string
 	 */
@@ -50,7 +66,7 @@ class CompleteRatio extends Model {
 
 	/**
 	 * @param mixed $user_id
-	 * @return ActionLog
+	 * @return CompleteRatio
 	 */
 	public function setUserId($user_id)
 	{

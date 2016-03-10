@@ -259,7 +259,7 @@ angular.module 'metaEditor'
     $scope.getSubjectMatters $scope.currentPage
 ]
 
-.controller 'IssuesCtrl', ['$scope', '$stateParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$state', '$alert', '$aside', 'CONF', ($scope, $stateParams, LP, AppServe, filterFilter, MergeService, $state, $alert, $aside, CONF) ->
+.controller 'IssuesCtrl', ['$scope', '$stateParams', 'LP', 'AppServe', 'filterFilter', 'MergeService', '$state', '$alert', '$aside', '$log', ($scope, $stateParams, LP, AppServe, filterFilter, MergeService, $state, $alert, $aside, $log) ->
 
   $scope.legal_head = $stateParams.legal_head.hexDecode()
   $scope.subject_matter = $stateParams.subject.hexDecode()
@@ -427,6 +427,11 @@ angular.module 'metaEditor'
     $scope.detachingRatio = true
     $scope.rModel = angular.copy ratio
     $scope.rModel.court = $stateParams.court
+
+  $scope.markDone = (ratio, $index) ->
+    MergeService.markDone ratio.pk
+    .then (r) ->
+      $scope.issue.principles[$index].id = r
 
   $scope.cancelDetach = ->
     $scope.rModel = {}
