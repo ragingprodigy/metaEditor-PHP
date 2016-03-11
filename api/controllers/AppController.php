@@ -289,6 +289,11 @@ class AppController extends RESTController {
 		$post = $this->requestBody;
 		$tableName = "analysis";
 
+		// Add Completion Record for Current User Points
+		$userKey = $headers['X_API_KEY'];
+		// Fetch User BY Key
+		$currentUser = User::findFirstByPrivateKey($userKey);
+
 		if (isset($post->court)) { if ($post->court!='sc') $tableName .= "_" . $post->court; }
 
 		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName SET `issues1` = :iss, `legal head` = :lh, subjectmatter = :sm, suitno41 = NULL, dt_modified=NOW() WHERE pk = :pk", array("iss"=>$post->newIssue,
@@ -299,14 +304,9 @@ class AppController extends RESTController {
 
 		foreach ($users as $user ) {
 			$reversal = new Reversal();
-			$reversal->setRatioId($post->id)->setUserId($user["user_id"]);
+			$reversal->setRatioId($post->id)->setUserId($user["user_id"])->setReversedBy($currentUser->getId());
 			$reversal->create();
 		}
-
-		// Add Completion Record for Current User Points
-		$userKey = $headers['X_API_KEY'];
-		// Fetch User BY Key
-		$currentUser = User::findFirstByPrivateKey($userKey);
 
 		if ($currentUser) {
 			$cr = new CompleteRatio();

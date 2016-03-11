@@ -15,6 +15,8 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 class Reversal extends CompleteRatio {
 
+	protected $reversed_by;
+
 	public function validation()
 	{
 		// Prevent Users from Marking data as complete twice
@@ -31,12 +33,22 @@ class Reversal extends CompleteRatio {
 	}
 
 	/**
-	 * Set CompleteRatio Table
+	 * Set Reversal Table
 	 *
 	 * @return string
 	 */
 	public function getSource()
 	{
 		return "reversals";
+	}
+
+	/**
+	 * @param mixed $reversed_by
+	 * @return Reversal
+	 */
+	public function setReversedBy($reversed_by)
+	{
+		$this->reversed_by = $reversed_by;
+		return $this;
 	}
 } 
