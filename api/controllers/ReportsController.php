@@ -70,7 +70,7 @@ class ReportsController extends RESTController {
 				$condition .= "YEARWEEK(created, 1) = YEARWEEK(CURRENT_DATE, 1)";
 			break;
 			case "month":
-				$condition .= "MONTH(stamp) = MONTH(CURRENT_DATE)";
+				$condition .= "MONTH(created) = MONTH(CURRENT_DATE)";
 			break;
 			case "span":
 				$condition .= "date_format(created, $this->format) BETWEEN date_format('$from', $this->format) AND date_format ('$to', $this->format)";
