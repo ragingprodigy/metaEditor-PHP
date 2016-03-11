@@ -62,8 +62,10 @@
             staff: $scope.activeStaff,
             from: $scope.from,
             to: $scope.to
-          }, function(summary) {
-            return $scope.summary = summary;
+          }, function(response) {
+            $scope.summary = response.summary;
+            $scope.completed = response.completed;
+            return $scope.reversals = response.reversals;
           });
         }
       };

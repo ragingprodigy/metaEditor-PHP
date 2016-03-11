@@ -29,7 +29,6 @@
       return $resource(baseUrl, null, {
         summary: {
           method: "GET",
-          isArray: true,
           url: baseUrl + "summary"
         },
         details: {

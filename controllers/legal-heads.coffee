@@ -47,8 +47,10 @@ angular.module 'metaEditor'
         staff: $scope.activeStaff
         from: $scope.from
         to: $scope.to
-      , (summary) ->
-        $scope.summary = summary
+      , (response) ->
+        $scope.summary = response.summary
+        $scope.completed = response.completed
+        $scope.reversals = response.reversals
 
   $scope.activePeriod = $scope.periods[0].value
   $scope.getData()

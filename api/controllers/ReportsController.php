@@ -30,7 +30,7 @@ class ReportsController extends RESTController {
 				$condition = "YEARWEEK(created, 1) = YEARWEEK(CURRENT_DATE, 1)";
 			break;
 			case "month":
-				$condition = "MONTH(stamp) = MONTH(CURRENT_DATE)";
+				$condition = "MONTH(created) = MONTH(CURRENT_DATE)";
 			break;
 			case "span":
 				$condition = "date_format(created, $this->format) BETWEEN date_format('$from', $this->format) AND date_format ('$to', $this->format)";
@@ -41,9 +41,12 @@ class ReportsController extends RESTController {
 		}
 
 		$query = "SELECT `action`, COUNT(*) as ct FROM action_logs WHERE $condition GROUP by `action`";
-		$summary = $this->getDi()->getShared('db')->fetchAll($query);
 
-		return $summary;
+		$summary = $this->getDi()->getShared('db')->fetchAll($query);
+		$completed = $this->getDi()->getShared('db')->fetchAll("SELECT COUNT(ratio_id) as ct FROM complete_ratio WHERE $condition");
+		$reversals = $this->getDi()->getShared('db')->fetchAll("SELECT COUNT(ratio_id) as ct FROM reversals WHERE $condition");
+
+		return array("summary"=>$summary, "completed"=>$completed, "reversals"=>$reversals);
 	}
 
 	public function details() {
@@ -78,7 +81,7 @@ class ReportsController extends RESTController {
 		}
 
 		$query = "SELECT * FROM action_logs WHERE $condition order by created ASC";
-		error_log($query);
+
 		$summary = $this->getDi()->getShared('db')->fetchAll($query);
 
 		return $summary;

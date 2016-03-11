@@ -20,14 +20,14 @@
     <ul class="nav navbar-nav" ng-hide="isGuest()">
         <li data-match-route="/sc"><a ui-sref="legal_head({court: 'sc'})" ng-bind="m.sc"></a></li>
         <li data-match-route="/ca"><a ui-sref="legal_head({court: 'ca'})" ng-bind="m.ca"></a></li>
-        <li data-match-route="/fhc"><a href="#/fhc" ng-bind="m.fhc"></a></li>
-        <li data-match-route="/tat"><a href="#/tat" ng-bind="m.tat"></a></li>
-        <li data-match-route="/nic"><a href="#/nic" ng-bind="m.nic"></a></li>
-        <li data-match-route="/uk"><a href="#/uk" ng-bind="m.uk"></a></li>
+        <li data-match-route="/fhc"><a ui-sref="legal_head({court: 'fhc'})" ng-bind="m.fhc"></a></li>
+        <li data-match-route="/tat"><a ui-sref="legal_head({court: 'tat'})" ng-bind="m.tat"></a></li>
+        <li data-match-route="/nic"><a ui-sref="legal_head({court: 'nic'})" ng-bind="m.nic"></a></li>
+        <li data-match-route="/uk"><a ui-sref="legal_head({court: 'uk'})" ng-bind="m.uk"></a></li>
     </ul>
 
     <ul class="nav navbar-nav pull-right">
-        <li><a ui-sref="reports">Dashboard</a></li>
+        <li data-match-route="/reports-view"><a ui-sref="reports">Leader Board</a></li>
         <li ng-hide="isGuest()"><a ng-click="logout()">LOGOUT</a></li>
     </ul>
 

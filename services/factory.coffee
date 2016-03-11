@@ -30,7 +30,6 @@ angular.module 'metaEditor'
   $resource baseUrl, null,
     summary:
       method: "GET"
-      isArray: true
       url: baseUrl + "summary"
     details:
       method: "GET"
