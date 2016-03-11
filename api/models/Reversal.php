@@ -21,7 +21,7 @@ class Reversal extends CompleteRatio {
 		$this->validate(
 			new Uniqueness(
 				array(
-					"field"   => array("ratio_id", "user_id"),
+					"field"   => "ratio_id, user_id",
 					"message" => "Ratio already exists"
 				)
 			)

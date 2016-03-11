@@ -294,23 +294,28 @@ class AppController extends RESTController {
 		$r1 = $this->getDi()->getShared('db')->query("UPDATE IGNORE $tableName SET `issues1` = :iss, `legal head` = :lh, subjectmatter = :sm, suitno41 = NULL, dt_modified=NOW() WHERE pk = :pk", array("iss"=>$post->newIssue,
 			"lh"=>$post->newLegalHead, "sm"=>$post->newSubjectMatter, "pk"=>$post->pk))->execute();
 
-		// Delete the Last "Completion Record"
-		$this->getDi()->getShared('db')->query("DELETE FROM complete_ratio WHERE ratio_id = :pk", array("pk"=>$post->pk))->execute();
+		// Get Users from the Last "Completion Record"s and Create Reversal Entries for them
+		$users = $this->getDi()->getShared('db')->query("SELECT user_id FROM complete_ratio WHERE ratio_id = :pk", array("pk"=>$post->pk))->fetchAll();
 
-		// Add Deduction Points
-		$userKey = $headers['X_API_KEY'];
-		// Fetch User BY Key
-		$user = User::findFirstByPrivateKey($userKey);
-
-		if ($user) {
+		foreach ($users as $user ) {
 			$reversal = new Reversal();
-			$reversal->setRatioId($post->id)->setUserId($user->getId());
+			$reversal->setRatioId($post->id)->setUserId($user["user_id"]);
 			$reversal->create();
-
-			if ($reversal->getMessages())
-				error_log(print_r($this->modelError($reversal), true));
 		}
 
+		// Add Completion Record for Current User Points
+		$userKey = $headers['X_API_KEY'];
+		// Fetch User BY Key
+		$currentUser = User::findFirstByPrivateKey($userKey);
+
+		if ($currentUser) {
+			$cr = new CompleteRatio();
+			$cr->setRatioId($post->id)->setUserId($currentUser->getId());
+			$cr->create();
+
+			if ($cr->getMessages())
+				error_log(print_r($this->modelError($cr), true));
+		}
 
 		$this->writeLog("detachRatio", 1, "Move Ratio with PK = {$post->pk} to the Following location: {$post->newLegalHead} -> {$post->newSubjectMatter} -> {$post->newIssue}");
 
