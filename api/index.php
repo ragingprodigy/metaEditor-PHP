@@ -122,14 +122,17 @@ $app->before(function() use ($app, $di) {
 			return true;
 	}
 
-	if (isset($headers['Authorization'])) {
-		$value = explode(" ", $headers['Authorization'])[1];
-		$jws = SimpleJWS::load($value, true);
-
-		if (!$jws->isExpired()) {
-			return true;
+	if (isset($headers['Authorization']) && !empty($headers['Authorization'])) {
+		$arr = explode(" ", $headers['Authorization']);
+		if (count($arr) > 1) {
+			$value = $arr[1];
+			$jws = SimpleJWS::load($value, true);
+			if (!$jws->isExpired()) {
+				return true;
+			} else
+				throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired Token Key", 403);
 		} else
-			throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired API Key", 403);
+			throw new \PhalconRest\Exceptions\HTTPException("No Key Set", 403);
 	}
 
 	// If we made it this far, we have no valid auth method, throw a 401.
