@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(0);
+
 use Phalcon\Config\Adapter\Ini as IniConfig;
 use Phalcon\DI\FactoryDefault as DefaultDI;
 use Phalcon\Loader;
