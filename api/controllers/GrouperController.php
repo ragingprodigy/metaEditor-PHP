@@ -127,9 +127,10 @@ class GrouperController extends RESTController {
 		$headers = apache_request_headers();
 		$arr = explode(" ", $headers['Authorization']);
 		$value = $arr[1];
-		
+
 		$jws = SimpleJWS::load($value, true);
-		$user = $jws->getPayLoad()['uid'];
+		$user_arr = $jws->getPayLoad();
+		$user = $user_arr['uid'];
 
 		error_log("Creating Review for user with iD: " . $user);
 
