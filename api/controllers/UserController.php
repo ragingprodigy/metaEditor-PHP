@@ -3,6 +3,7 @@ namespace PhalconRest\Controllers;
 
 use PhalconRest\Exceptions\HTTPException;
 use PhalconRest\Models\User;
+use Namshi\JOSE\SimpleJWS;
 
 /**
  * Class UserController
@@ -37,6 +38,47 @@ class UserController extends RESTController {
 		}
 		else
 			throw new HTTPException("Invalid Username/Password", 401);
+	}
+
+	/**
+	 * Exchange Username and Password for JWToken
+	 *
+	 * @throws HTTPException
+	 * @return array
+	 */
+	public function login_jwt() {
+
+		$username = $this->requestBody->username;
+		$pwd = $this->requestBody->password;
+
+		/** @var User $user */
+		$user = User::findFirstByUsername($username);
+		if ($user && ($user->getPassword()==md5($pwd))) {
+
+			$user->setExpires(date("Y-m-d H:i:s", strtotime("+5 minutes")));
+			$user->setPrivateKey(md5(time().$user->getName()."lp"));
+			$user->save();
+
+			// TODO: Generate JWT Here
+			$jws  = new SimpleJWS(array(
+				'alg' => 'RS256'
+			));
+			$jws->setPayload(array(
+				'uid' => $user->getId(),
+				"name" => $user->getName()
+			));
+
+			return array(
+				"token"=>$jws->getTokenString(),
+				"expires"=>$user->getExpires()
+			);
+		}
+		else
+			throw new HTTPException("Invalid Username/Password", 401);
+	}
+
+	public function info() {
+		return array();
 	}
 
 	/**

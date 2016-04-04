@@ -29,14 +29,14 @@ class CompleteRatio extends Model {
 	public function validation()
 	{
 		// Prevent Users from Marking data as complete twice
-		$this->validate(
-			new Uniqueness(
-				array(
-					"field"   => "ratio_id, user_id",
-					"message" => "Ratio already exists"
-				)
-			)
-		);
+//		$this->validate(
+//			new Uniqueness(
+//				array(
+//					"field"   => "ratio_id, user_id",
+//					"message" => "Ratio already exists"
+//				)
+//			)
+//		);
 
 		return $this->validationHasFailed() != true;
 	}

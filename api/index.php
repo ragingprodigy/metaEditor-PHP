@@ -3,6 +3,9 @@
 use Phalcon\Config\Adapter\Ini as IniConfig;
 use Phalcon\DI\FactoryDefault as DefaultDI;
 use Phalcon\Loader;
+use Namshi\JOSE\SimpleJWS;
+
+require "vendor/autoload.php";
 
 /**
  * By default, namespaces are assumed to be the same as the path.
@@ -95,8 +98,11 @@ $app->setDI($di);
 
 $app->before(function() use ($app, $di) {
 
+	if ($app->request->getMethod() == 'OPTIONS') return true;
+
 	switch($app->getRouter()->getRewriteUri()) {
 		case '/v1/users/login/':
+		case '/v1/users/login_jwt/':
 		case '/v1/users/register/':
 		case '/v1/reports/summary':
 		case '/v1/reports/staff':
@@ -114,6 +120,16 @@ $app->before(function() use ($app, $di) {
 			throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired API Key", 403);
 		else
 			return true;
+	}
+
+	if (isset($headers['Authorization'])) {
+		$value = explode(" ", $headers['Authorization'])[1];
+		$jws = SimpleJWS::load($value, true);
+
+		if (!$jws->isExpired()) {
+			return true;
+		} else
+			throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired API Key", 403);
 	}
 
 	// If we made it this far, we have no valid auth method, throw a 401.
@@ -160,6 +176,9 @@ $app->get('/', function() use ($app){
  * different response type handlers.  Below is an alternate csv handler.
  */
 $app->after(function() use ($app) {
+
+//	$app->response->setHeader('Access-Control-Allow-Headers',
+//		'Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, Access-Control-Expose-Headers, Access-Control-Allow-Methods, Angular, Content-Type');
 
 	// OPTIONS have no body, send the headers, exit
 	if($app->request->getMethod() == 'OPTIONS'){

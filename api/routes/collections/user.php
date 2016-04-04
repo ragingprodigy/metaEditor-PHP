@@ -17,6 +17,8 @@ return call_user_func(function(){
 
 	$userCollection->get('/', 'index');
 	$userCollection->post('/login', 'login');
+	$userCollection->post('/login_jwt', 'login_jwt');
+	$userCollection->options('/login_jwt', 'info');
 	$userCollection->post('/register', 'register');
 
 	return $userCollection;
