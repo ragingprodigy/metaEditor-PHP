@@ -129,10 +129,11 @@ $app->before(function() use ($app, $di) {
 		if (count($arr) > 1) {
 			$value = $arr[1];
 			$jws = SimpleJWS::load($value, true);
-			if (!$jws->isExpired()) {
-				return true;
-			} else
-				throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired Token Key", 403);
+			return true;
+//			if (!$jws->isExpired()) {
+//				return true;
+//			} else
+//				throw new \PhalconRest\Exceptions\HTTPException("Invalid/Expired Token Key", 403);
 		} else
 			throw new \PhalconRest\Exceptions\HTTPException("No Key Set", 403);
 	}

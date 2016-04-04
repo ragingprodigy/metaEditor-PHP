@@ -1,16 +1,15 @@
 <?php
 
 namespace Namshi\JOSE\Signer\OpenSSL;
-
 use Namshi\JOSE\Signer\SignerInterface;
 
 /**
- * None Signer.
+ * None Signer
  */
 class None implements SignerInterface
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function sign($input, $key)
     {
@@ -18,7 +17,7 @@ class None implements SignerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function verify($key, $signature, $input)
     {
