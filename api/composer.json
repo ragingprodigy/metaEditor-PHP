@@ -1,7 +1,7 @@
 {
     "name": "oladapo/api",
     "require": {
-        "namshi/jose": "7.0.*"
+        "namshi/jose": "5.0.*"
     },
     "authors": [
         {
