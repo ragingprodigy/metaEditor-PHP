@@ -125,7 +125,9 @@ class GrouperController extends RESTController {
 	public function newReview() {
 		$body = $this->requestBody;
 		$headers = apache_request_headers();
-		$value = explode(" ", $headers['Authorization'])[1];
+		$arr = explode(" ", $headers['Authorization']);
+		$value = $arr[1];
+		
 		$jws = SimpleJWS::load($value, true);
 		$user = $jws->getPayLoad()['uid'];
 
